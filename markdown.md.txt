@@ -1,0 +1,41 @@
+# Mastering React + TypeScript + Redux Toolkit + Testing with GitHub Copilot
+## June 12, 2025
+### Presented by: [Your Name]
+
+---
+
+# Overview
+
+**Objective:**  
+Empower high-productivity development with GitHub Copilot in React projects.
+
+**Topics Covered:**  
+- React + TypeScript Architecture  
+- Redux Toolkit + Async Flows  
+- Advanced Testing (Jest, RTL, MSW)  
+- Complex UI Testing  
+- Hook Testing  
+- Event-driven Redux + Axios Testing  
+
+---
+
+# Copilot Prompt Playbook
+
+**Copilot Works Great For:**  
+- React components & hooks  
+- Redux Toolkit slices & thunks  
+- UI events & complex interactions  
+- Automated tests (unit, integration, E2E)  
+- Folder architecture scaffolding  
+- Cheat sheet driven productivity boost
+
+---
+
+# React + TypeScript Prompts
+
+**Examples:**  
+```txt
+// Create React component with TS props
+// Create custom hook returning typed value
+// Create useReducer-based hook for form state
+// Write test for useDebounce hook
