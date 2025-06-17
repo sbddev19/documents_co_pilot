@@ -1,0 +1,66 @@
+Based on the CORS headers shown in your screenshots, there is a medium risk CORS misconfiguration due to overly permissive settings, especially when Access-Control-Allow-Credentials: true is combined with flexible or reflected origins. Here’s a breakdown and the solution:
+
+⸻
+
+🔍 Identified Issues
+	1.	Access-Control-Allow-Origin: https://nccgroup.com
+	•	While this is a specific domain (good), if it’s dynamically reflecting the Origin header without validation, it poses a risk.
+	•	If the origin is reflected based on a request (i.e., attacker-controlled), this allows credentialed requests from malicious domains.
+	2.	Access-Control-Allow-Credentials: true
+	•	Allows cookies and HTTP authentication to be sent with cross-origin requests.
+	•	Combined with dynamic Access-Control-Allow-Origin, it becomes a serious issue.
+	3.	Access-Control-Allow-Headers: Content-Type, Authorization, Cookie, country
+	•	This includes sensitive headers like Authorization and Cookie—acceptable only for highly trusted and validated origins.
+	4.	Access-Control-Expose-Headers and token exposure:
+	•	ACCESS-TOKEN, CSL-REFRESH-TOKEN being exposed makes it easy for attackers to obtain sensitive tokens.
+
+⸻
+
+✅ Recommended Solutions
+
+1. Avoid dynamic Access-Control-Allow-Origin when using credentials
+	•	Set the header only to a strict whitelist of trusted domains.
+
+Access-Control-Allow-Origin: https://trusted-client.example.com
+Access-Control-Allow-Credentials: true
+
+
+Do not use "*" when Access-Control-Allow-Credentials: true.
+
+2. Do not expose sensitive headers unless necessary
+	•	Review and remove sensitive headers from Access-Control-Expose-Headers.
+	•	Example:
+
+
+Access-Control-Expose-Headers: Content-Length
+
+•	Avoid exposing ACCESS-TOKEN and CSL-REFRESH-TOKEN unless absolutely required.
+
+3. Restrict Access-Control-Allow-Headers
+	•	Limit to only what’s needed:
+
+Access-Control-Allow-Headers: Content-Type
+
+•	Avoid including Authorization, Cookie, etc., unless required and the origin is trusted.
+
+4. Implement origin validation logic on the server
+	•	Example in Node.js (Express):
+
+
+const allowedOrigins = ['https://trusted-client.example.com'];
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  next();
+});
+
+5. Set strict Content-Security-Policy
+	•	Improve frontend security with proper CSP headers:
+
+Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none';
+
+
+
