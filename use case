@@ -40,3 +40,17 @@ Claude is not just a one-time form generator, but an agent that:
 	•	Suggests optimizations (“Do you want to add a terms checkbox?”)
 	•	Can loop across multiple interactions
 	•	Maintains reasoning memory (if memory-enabled)
+
+Benefits
+	•	No-code experience for form creation
+	•	Faster iteration and form deployment
+	•	Centralized schema logic and reusability
+	•	Enhanced accessibility and UX consistency
+	•	Extensible to backend form workflows
+
+⸻
+
+🔒 Security Considerations
+	•	Use Claude behind a proxy (Node.js) with API keys securely managed via .env
+	•	Validate incoming form schemas before rendering (schema sanitization)
+	•	Optionally, limit prompt length or field types Claude can generate
