@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mobile Satisfaction Score Revamp – Confluence Pack</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#222;margin:24px;max-width:1100px}
+  h1,h2,h3{margin-top:1.2em}
+  table{border-collapse:collapse;width:100%;margin:12px 0}
+  th,td{border:1px solid #ddd;padding:8px;vertical-align:top}
+  th{background:#f5f7fa;text-align:left}
+  code,kbd{background:#f7f7f7;padding:2px 4px;border-radius:3px}
+  .muted{color:#666}
+  .legend td{white-space:nowrap}
+</style>
+</head>
+<body>
+
+<h1>Mobile Satisfaction Score Revamp – Project Overview</h1>
+<p><strong>Project Duration:</strong> 13 Oct 2025 – 22 Nov 2025<br>
+<strong>Delivery Mode:</strong> Agile – tracked via Azure DevOps (ADO)<br>
+<strong>Applications Involved:</strong> Mobile Banking SDK (Android + iOS), Backend APIs (Java, OCP Deployment), Back Office Portal (React.js), Adobe Analytics Integration</p>
+
+<h2>Team Composition</h2>
+<ul>
+  <li>1 Android Developer</li>
+  <li>1 iOS Developer</li>
+  <li>1 React Developer</li>
+  <li>2 Java Backend Developers</li>
+  <li>2 QA Testers</li>
+  <li>1 Android New Joiner</li>
+  <li>1 React Deep Link Developer</li>
+  <li>1 Content Developer</li>
+  <li>Architect, PM, Business Analyst (shared)</li>
+</ul>
+
+<h1>Work Breakdown Structure</h1>
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Phase</th>
+      <th>Key Deliverables</th>
+      <th>Timeline</th>
+      <th>Owner(s)</th>
+      <th>Acceptance Criteria</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td><strong>Requirements &amp; Design</strong></td><td>BRD review; 7 journeys + logout flow; HLD/LLD; Adobe Analytics tagging matrix</td><td>13–17 Oct</td><td>Architect + All</td><td>Design docs approved and signed off</td></tr>
+    <tr><td>2</td><td><strong>Backend Development</strong></td><td>API contract updates; schema changes; Adobe Analytics backend integration; OCP setup</td><td>20–31 Oct</td><td>Java Devs</td><td>All APIs tested and deployed on OCP DEV</td></tr>
+    <tr><td>3</td><td><strong>Android SDK Revamp</strong></td><td>Popup revamp (7 journeys); logout reuse; Adobe Analytics integration</td><td>20 Oct – 6 Nov</td><td>Android Dev + New Joiner</td><td>Popup and logout reuse work; analytics data validated</td></tr>
+    <tr><td>4</td><td><strong>iOS SDK Revamp</strong></td><td>Popup revamp (7 journeys); logout reuse; analytics tracking</td><td>20 Oct – 6 Nov</td><td>iOS Dev</td><td>iOS build validated with analytics reporting</td></tr>
+    <tr><td>5</td><td><strong>React Back Office</strong></td><td>Add logout feedback tracking and Adobe analytics dashboard</td><td>27 Oct – 6 Nov</td><td>React Dev + Deep Link Dev</td><td>Dashboard updated and analytics validated</td></tr>
+    <tr><td>6</td><td><strong>Testing &amp; QA</strong></td><td>SIT, UAT, OAT across SDKs, backend, and portal</td><td>10–21 Nov</td><td>QA Team</td><td>SIT/UAT/OAT passed with sign-offs</td></tr>
+    <tr><td>7</td><td><strong>Governance &amp; Release</strong></td><td>Architecture/SIA approval; release note; rollback; ADO closure</td><td>19–22 Nov</td><td>Architect + PM</td><td>Release deployed to PROD; SIA approved</td></tr>
+    <tr><td>8</td><td><strong>Project Management</strong></td><td>Sprint tracking; documentation; progress updates</td><td>13 Oct – 22 Nov</td><td>PM</td><td>All ADO tasks linked; weekly reports submitted</td></tr>
+  </tbody>
+</table>
+
+<h1>Effort Summary</h1>
+<table>
+  <thead><tr><th>Role</th><th>Effort (Days)</th><th>Effort (Hours)</th><th>Key Outputs</th></tr></thead>
+  <tbody>
+    <tr><td>Android Developer</td><td>15</td><td>120</td><td>SDK popup revamp + logout reuse</td></tr>
+    <tr><td>iOS Developer</td><td>15</td><td>120</td><td>iOS popup revamp + analytics</td></tr>
+    <tr><td>React Developer</td><td>5</td><td>40</td><td>Back-office enhancement</td></tr>
+    <tr><td>Java Backend Devs (x2)</td><td>20</td><td>160</td><td>API + DB + OCP deployments</td></tr>
+    <tr><td>QA Testers (x2)</td><td>10</td><td>80</td><td>SIT, UAT, OAT validation</td></tr>
+    <tr><td>PM + Architect</td><td>5</td><td>40</td><td>Design review + release management</td></tr>
+  </tbody>
+</table>
+
+<h1>Acceptance Criteria Summary</h1>
+<h3>Functional</h3>
+<ul>
+  <li>Feedback popup revamp functional across 7 journeys on both platforms</li>
+  <li>Logout reuse validated without regressions</li>
+  <li>Adobe Analytics events captured (open, submit, close, logout)</li>
+  <li>Back-office dashboard updated with logout score</li>
+</ul>
+<h3>Technical</h3>
+<ul>
+  <li>API backward compatible with existing payloads</li>
+  <li>OCP deployment successful in all non-prod environments</li>
+  <li>SIT/UAT/OAT passed without critical defects</li>
+</ul>
+<h3>Governance</h3>
+<ul>
+  <li>Architect &amp; SIA approvals complete</li>
+  <li>ADO work items closed with test evidence</li>
+  <li>Release documentation and rollback plan uploaded</li>
+</ul>
+
+<h1>Daily Risk &amp; Productivity Tracker</h1>
+<table>
+  <thead>
+    <tr>
+      <th>#</th><th>Date</th><th>Resource / Role</th><th>Planned Tasks</th><th>Actual Progress</th><th>Productivity %</th><th>Risk / Impediment</th><th>Category</th><th>Severity</th><th>Mitigation Plan</th><th>Owner</th><th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>13-Oct</td><td>Android Developer</td><td>Review SDK architecture, setup environment</td><td>Completed</td><td>100%</td><td>None</td><td>-</td><td>-</td><td>Continue next module</td><td>PM</td><td>Closed</td></tr>
+    <tr><td>2</td><td>13-Oct</td><td>iOS Developer</td><td>Setup Xcode project and SDK link</td><td>Completed</td><td>100%</td><td>None</td><td>-</td><td>-</td><td>Proceed to popup revamp task</td><td>PM</td><td>Closed</td></tr>
+    <tr><td>3</td><td>13-Oct</td><td>Java Backend Dev 1</td><td>Update feedback API swagger</td><td>In Progress</td><td>80%</td><td>API dependency from UI team</td><td>Dependency</td><td>Medium</td><td>Align with UI mock API</td><td>Tech Lead</td><td>Open</td></tr>
+    <tr><td>4</td><td>13-Oct</td><td>React Developer</td><td>Prepare analytics tagging spec</td><td>Completed</td><td>100%</td><td>None</td><td>-</td><td>-</td><td>Submit for review</td><td>PM</td><td>Closed</td></tr>
+    <tr><td>5</td><td>14-Oct</td><td>QA Tester 1</td><td>SIT test case design</td><td>In Progress</td><td>90%</td><td>Missing logout scenarios</td><td>Functional</td><td>Low</td><td>Add logout test cases</td><td>QA Lead</td><td>Open</td></tr>
+    <tr><td>6</td><td>15-Oct</td><td>Android New Joiner</td><td>Review onboarding &amp; SDK</td><td>Completed</td><td>100%</td><td>Ramp-up phase</td><td>Resource</td><td>Low</td><td>Assign minor bug fixes</td><td>Android Lead</td><td>Closed</td></tr>
+    <tr><td>7</td><td>16-Oct</td><td>Java Backend Dev 2</td><td>Implement DB migration</td><td>Delayed</td><td>50%</td><td>DB env access issue</td><td>Environment</td><td>High</td><td>Escalate to DevOps</td><td>PM</td><td>Open</td></tr>
+    <tr><td>8</td><td>17-Oct</td><td>React Deep Link Dev</td><td>Review deep link handling</td><td>In Progress</td><td>75%</td><td>Awaiting API confirmation</td><td>Dependency</td><td>Medium</td><td>Backend to finalize payload</td><td>Tech Lead</td><td>Open</td></tr>
+    <tr><td>9</td><td>18-Oct</td><td>Content Developer</td><td>Update UX text for 7 journeys</td><td>Completed</td><td>100%</td><td>None</td><td>-</td><td>-</td><td>Push updated JSONs</td><td>PM</td><td>Closed</td></tr>
+    <tr><td>10</td><td>18-Oct</td><td>QA Tester 2</td><td>Prepare regression suite</td><td>In Progress</td><td>85%</td><td>SDK build delay</td><td>Schedule</td><td>Medium</td><td>Android build ETA 19th</td><td>QA Lead</td><td>Open</td></tr>
+  </tbody>
+</table>
+
+<h2>Risk Severity Legend</h2>
+<table class="legend">
+  <thead><tr><th>Severity</th><th>Definition</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td>Low</td><td>Minor delay or low impact risk</td><td>Missing test cases</td></tr>
+    <tr><td>Medium</td><td>Moderate risk with limited impact</td><td>API dependency or UI delay</td></tr>
+    <tr><td>High</td><td>Critical delivery blocker</td><td>Environment unavailability, DB issues</td></tr>
+  </tbody>
+</table>
+
+<h2>Monitoring &amp; Reporting</h2>
+<ul>
+  <li>PM to update tracker daily in Confluence or link to Excel version</li>
+  <li>Use conditional formatting for <em>Severity (H/M/L)</em></li>
+  <li>Include charts (Pivot tables) for Productivity trend by role, Risks by category, Open/Closed task ratio</li>
+</ul>
+
+<p class="muted">Prepared for Confluence paste. Last updated: 11 Oct 2025</p>
+
+</body>
+</html>
