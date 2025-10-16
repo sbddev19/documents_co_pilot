@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Region-Comparative Cross‑Sell Blueprint (Mobile Retail Banking)</title>
+<style>
+  :root{--ink:#111827;--muted:#6b7280;--bg:#ffffff;--card:#f9fafb;--brand:#0ea5e9;--ok:#10b981;--warn:#f59e0b;--sg:#059669;--hk:#2563eb;--eu:#7c3aed;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,"Helvetica Neue",sans-serif}
+  .page{max-width:1100px;margin:24px auto 80px;padding:0 16px}
+  h1,h2,h3{line-height:1.25;margin:18px 0 8px}
+  h1{font-size:28px} h2{font-size:22px;border-top:1px solid #e5e7eb;padding-top:14px} h3{font-size:18px}
+  p{margin:10px 0} .muted{color:var(--muted)}
+  .toc{background:var(--card);border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px}
+  .toc a{color:var(--brand);text-decoration:none}
+  .grid{display:grid;gap:16px} .g-2{grid-template-columns:repeat(2,minmax(0,1fr))} .g-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media(max-width:900px){.g-2,.g-3{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid #e5e7eb;border-radius:14px;padding:16px}
+  .badge{display:inline-block;font-size:12px;font-weight:600;padding:3px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;margin-right:6px}
+  .badge.sg{background:#ecfdf5;color:var(--sg)} .badge.hk{background:#eff6ff;color:var(--hk)} .badge.eu{background:#f5f3ff;color:var(--eu)}
+  .keylist li{margin:6px 0}
+  .kpis{display:grid;gap:10px;grid-template-columns:repeat(4,minmax(0,1fr))} @media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .kpi{background:#ffffff;border:1px dashed #e5e7eb;border-radius:12px;padding:12px}.kpi .val{font-size:22px;font-weight:700}
+  table{width:100%;border-collapse:collapse} th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top} th{background:#f3f4f6;font-weight:700}
+  .callout{border-left:4px solid var(--ok);background:#ecfdf5;padding:10px 12px;border-radius:8px}.warn{border-left-color:var(--warn);background:#fffbeb}
+  .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#f3f4f6;font-size:12px;margin-right:6px}
+  .offer{background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;padding:14px}
+  .btn{display:inline-block;background:var(--brand);color:#fff;text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:600}
+  .small{font-size:12px} .svg-wrap{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:8px}
+  .footer-note{margin-top:28px;font-size:12px;color:#6b7280}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Region-Comparative Cross‑Sell Blueprint (Mobile Retail Banking)</h1>
+  <p class="muted">A practical, compliant, and data-driven approach to cross-sell for <span class="badge sg">Singapore</span><span class="badge hk">Hong Kong</span><span class="badge eu">Europe</span></p>
+
+  <div class="toc">
+    <strong>Contents</strong>
+    <ol>
+      <li><a href="#vision">Strategic Vision</a></li>
+      <li><a href="#diagram">Architecture Diagram</a></li>
+      <li><a href="#signals">Signals → Opportunities (by Region)</a></li>
+      <li><a href="#params">Key Parameters</a></li>
+      <li><a href="#framework">Implementation Framework</a></li>
+      <li><a href="#ux">UX Patterns &amp; Examples</a></li>
+      <li><a href="#kpi">KPIs &amp; Experimentation</a></li>
+      <li><a href="#compliance">Compliance &amp; Governance</a></li>
+    </ol>
+  </div>
+
+  <h2 id="vision">1) Strategic Vision</h2>
+  <div class="callout">Evolve from “pushing products” to a <strong>Personalized Financial Journey Companion</strong> that anticipates needs and recommends the next best action (NBA) and next best offer (NBO) aligned to local norms.</div>
+
+  <h2 id="diagram">2) Region-Aware Architecture (Inline SVG)</h2>
+  <div class="svg-wrap">
+    <!-- Self-contained SVG suitable for Confluence HTML macro -->
+    <svg viewBox="0 0 1200 720" width="100%" aria-label="Cross-sell architecture">
+      <!-- Lanes -->
+      <rect x="10" y="10" width="1180" height="130" rx="12" fill="#f9fafb" stroke="#e5e7eb"/>
+      <rect x="10" y="160" width="1180" height="140" rx="12" fill="#f9fafb" stroke="#e5e7eb"/>
+      <rect x="10" y="320" width="1180" height="130" rx="12" fill="#f9fafb" stroke="#e5e7eb"/>
+      <rect x="10" y="470" width="1180" height="230" rx="12" fill="#f9fafb" stroke="#e5e7eb"/>
+
+      <!-- Titles -->
+      <text x="24" y="35" font-size="16" font-weight="700" fill="#111827">Data Sources</text>
+      <text x="24" y="185" font-size="16" font-weight="700" fill="#111827">Customer 360 &amp; AI/ML</text>
+      <text x="24" y="345" font-size="16" font-weight="700" fill="#111827">Event Streaming &amp; Decisioning</text>
+      <text x="24" y="495" font-size="16" font-weight="700" fill="#111827">Omnichannel Delivery &amp; Compliance</text>
+
+      <!-- Data source boxes -->
+      <rect x="40" y="55" width="250" height="70" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="60" y="85" font-size="14" fill="#111827">Core Banking, Cards, Loans</text>
+      <text x="60" y="105" font-size="12" fill="#6b7280">balances, txns, limits</text>
+
+      <rect x="320" y="55" width="250" height="70" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="340" y="85" font-size="14" fill="#111827">CRM &amp; Mobile Analytics</text>
+      <text x="340" y="105" font-size="12" fill="#6b7280">engagement, funnels</text>
+
+      <rect x="600" y="55" width="250" height="70" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="620" y="78" font-size="14" fill="#111827">Open APIs</text>
+      <text x="620" y="100" font-size="12" fill="#6b7280">SG: SGFinDex/MyInfo • HK: HKMA • EU: PSD2</text>
+
+      <rect x="880" y="55" width="250" height="70" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="900" y="85" font-size="14" fill="#111827">Risk/Credit Bureaus</text>
+      <text x="900" y="105" font-size="12" fill="#6b7280">scores, limits, flags</text>
+
+      <!-- Arrows to C360 -->
+      <line x1="165" y1="125" x2="165" y2="160" stroke="#9ca3af"/>
+      <line x1="445" y1="125" x2="445" y2="160" stroke="#9ca3af"/>
+      <line x1="725" y1="125" x2="725" y2="160" stroke="#9ca3af"/>
+      <line x1="1005" y1="125" x2="1005" y2="160" stroke="#9ca3af"/>
+
+      <!-- C360 & AI -->
+      <rect x="40" y="190" width="340" height="90" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="60" y="215" font-size="14" font-weight="700" fill="#111827">Customer 360 Data Platform</text>
+      <text x="60" y="235" font-size="12" fill="#6b7280">identity resolution • features • segments</text>
+
+      <rect x="420" y="190" width="340" height="90" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="440" y="215" font-size="14" font-weight="700" fill="#111827">AI/ML Personalization</text>
+      <text x="440" y="235" font-size="12" fill="#6b7280">Affinity • Propensity • Risk • NBO/NBA</text>
+
+      <rect x="800" y="190" width="330" height="90" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="820" y="215" font-size="14" font-weight="700" fill="#111827">Policy &amp; Guardrails</text>
+      <text x="820" y="235" font-size="12" fill="#6b7280">frequency caps • fairness • explainability</text>
+
+      <!-- Event layer -->
+      <rect x="40" y="350" width="340" height="80" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="60" y="375" font-size="14" font-weight="700" fill="#111827">Event Bus</text>
+      <text x="60" y="395" font-size="12" fill="#6b7280">Kafka / Kinesis / PubSub</text>
+
+      <rect x="420" y="350" width="340" height="80" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="440" y="375" font-size="14" font-weight="700" fill="#111827">Decisioning</text>
+      <text x="440" y="395" font-size="12" fill="#6b7280">real-time triggers • eligibility • ranking</text>
+
+      <rect x="800" y="350" width="330" height="80" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="820" y="375" font-size="14" font-weight="700" fill="#111827">A/B &amp; Experimentation</text>
+      <text x="820" y="395" font-size="12" fill="#6b7280">variants • metrics • learning</text>
+
+      <!-- Delivery & Compliance -->
+      <rect x="40" y="510" width="340" height="170" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="60" y="535" font-size="14" font-weight="700" fill="#111827">Delivery Channels</text>
+      <text x="60" y="555" font-size="12" fill="#6b7280">In‑App Cards • Push • Email • WhatsApp</text>
+
+      <rect x="420" y="510" width="340" height="170" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="440" y="535" font-size="14" font-weight="700" fill="#111827">Regional UX</text>
+      <text x="440" y="555" font-size="12" fill="#6b7280">SG: Wealth • HK: FX/Travel • EU: ESG</text>
+
+      <rect x="800" y="510" width="330" height="170" rx="12" fill="#ffffff" stroke="#e5e7eb"/>
+      <text x="820" y="535" font-size="14" font-weight="700" fill="#111827">Compliance Zones</text>
+      <text x="820" y="555" font-size="12" fill="#6b7280">MAS (SG) • HKMA (HK) • GDPR/PSD2 (EU)</text>
+    </svg>
+  </div>
+
+  <h2 id="signals">3) Signals → Opportunities (by Region)</h2>
+  <div class="grid g-3">
+    <div class="card">
+      <h3><span class="badge sg">Singapore</span> Wealth‑Building</h3>
+      <ul class="keylist">
+        <li>Salary inflow (≥ SGD 8–10k) → <strong>Robo/ETF portfolios</strong>, unit trusts</li>
+        <li>High CPF but low investable cash → <strong>Supplementary retirement</strong> plans</li>
+        <li>Family‑linked accounts → <strong>Family term/health insurance</strong></li>
+        <li>Frequent PayNow/Grab → <strong>Lifestyle rewards cards</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="badge hk">Hong Kong</span> Multi‑Currency Lifestyle</h3>
+      <ul class="keylist">
+        <li>Remittance &amp; FX usage → <strong>Low‑fee multicurrency account</strong>, instant FX</li>
+        <li>Large cash balance → <strong>Tiered time deposits</strong></li>
+        <li>Trading activity → <strong>Wealth platform upsell</strong> (equities/ETFs)</li>
+        <li>High dining/travel spend → <strong>Premium card</strong> + lounge access</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3><span class="badge eu">Europe</span> Trust &amp; Sustainability</h3>
+      <ul class="keylist">
+        <li>Steady income (25–35) → <strong>ESG/low‑risk funds</strong></li>
+        <li>Salary + rent → <strong>Home insurance</strong> or savings‑linked mortgage</li>
+        <li>Debit‑heavy spend → <strong>Green/cashback credit card</strong></li>
+        <li>Frequent EU travel → <strong>Virtual multicurrency card</strong> + insurance</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 id="params">4) Key Parameters</h2>
+  <table>
+    <thead><tr><th>Category</th><th>Examples</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td>Demographic</td><td>Age, location, occupation, income cohort</td><td>Segment life‑stage needs</td></tr>
+      <tr><td>Behavioral</td><td>Logins, features used, goals, session depth</td><td>Engagement &amp; readiness</td></tr>
+      <tr><td>Transactional</td><td>Salary, card spend clusters, recurrent bills</td><td>Financial maturity &amp; intent</td></tr>
+      <tr><td>Credit/Risk</td><td>Score, limits, repayments</td><td>Pre‑approved lending</td></tr>
+      <tr><td>Affinity</td><td>Offer views, clicks, conversions</td><td>Model feedback loop</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="framework">5) Implementation Framework</h2>
+  <ol>
+    <li><strong>Unify data (Customer 360):</strong> identity resolution, feature store, consent ledger.</li>
+    <li><strong>Models:</strong> Affinity, Propensity, Risk, Uplift; champion‑challenger setup.</li>
+    <li><strong>Event‑driven triggers:</strong> salary credited, high‑value txn, travel‑spend spikes.</li>
+    <li><strong>Decisioning:</strong> eligibility, fairness, caps, “Why this offer?” explanations.</li>
+    <li><strong>Omnichannel:</strong> in‑app cards, push, email, WhatsApp (SG/HK), web (EU).</li>
+    <li><strong>Observability:</strong> dashboards for CTR, CVR, revenue, and fairness metrics.</li>
+  </ol>
+
+  <h2 id="ux">6) UX Patterns &amp; Examples</h2>
+  <div class="grid g-2">
+    <div class="offer">
+      <div class="pill">Context Card (SG)</div>
+      <p><strong>“You saved SGD 5,000 this month.”</strong><br>Earn up to 3.5% with Smart Deposit or auto‑invest in a low‑risk portfolio curated for you.</p>
+      <a class="btn" href="#">Learn more</a> <span class="small muted">Why this? Salary pattern &amp; idle balance</span>
+    </div>
+    <div class="offer">
+      <div class="pill">FX / Travel (HK)</div>
+      <p><strong>“Frequent HK⇄US payments detected.”</strong><br>Open a multicurrency account with instant FX and airport‑lounge credit card.</p>
+      <a class="btn" href="#">See options</a> <span class="small muted">Why this? Remittance &amp; FX usage</span>
+    </div>
+    <div class="offer">
+      <div class="pill">ESG Investing (EU)</div>
+      <p><strong>“Build a sustainable portfolio.”</strong><br>Start with low‑risk ESG funds and set monthly auto‑invest.</p>
+      <a class="btn" href="#">Start investing</a> <span class="small muted">Why this? Age &amp; savings plateau</span>
+    </div>
+    <div class="offer">
+      <div class="pill">Lending (All)</div>
+      <p><strong>“Improve your limit.”</strong><br>Pre‑approved top‑up based on repayment history and internal score.</p>
+      <a class="btn" href="#">Check eligibility</a> <span class="small muted">Why this? Clean EMI history</span>
+    </div>
+  </div>
+
+  <h2 id="kpi">7) KPIs &amp; Experimentation</h2>
+  <div class="kpis">
+    <div class="kpi"><div class="val">+20–40%</div><div class="muted small">Lift in CTR via personalization</div></div>
+    <div class="kpi"><div class="val">+5–10%</div><div class="muted small">Conversion (NBO vs control)</div></div>
+    <div class="kpi"><div class="val">≤ 2s</div><div class="muted small">Trigger-to-render latency</div></div>
+    <div class="kpi"><div class="val">≤ 3 / wk</div><div class="muted small">Offer frequency cap per user</div></div>
+  </div>
+
+  <h2 id="compliance">8) Compliance &amp; Governance</h2>
+  <div class="card">
+    <ul class="keylist">
+      <li><strong>Singapore (MAS):</strong> Fair Dealing, MyInfo consent, SGFinDex data minimization.</li>
+      <li><strong>Hong Kong (HKMA):</strong> Open API security profiles, transparent FX disclosures.</li>
+      <li><strong>Europe (GDPR/PSD2):</strong> explicit opt‑in for profiling, DPIA, Right to Explanation, SCA.</li>
+      <li><strong>Guardrails:</strong> frequency caps, exclude vulnerable cohorts, audit logs for offers.</li>
+    </ul>
+  </div>
+
+  <p class="footer-note">Tip: paste this file into Confluence using the “HTML Macro” (or upload and embed as a static page). The SVG diagram is inline—no external assets required.</p>
+</div>
+</body>
+</html>

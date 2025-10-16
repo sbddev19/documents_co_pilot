@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gen Z Event-Driven Cross-Sell with AI (CSI + RTIM + AEM)</title>
+<style>
+  :root{
+    --bg:#0b1220; --surface:#0f172a; --muted:#94a3b8; --text:#e2e8f0; --accent:#60a5fa; --accent2:#34d399; --warn:#f59e0b; --ok:#22c55e; --bad:#ef4444;
+    --chip:#0b2545; --border:#1f2a44; --radius:16px; --shadow: 0 10px 30px rgba(2,12,27,0.3);
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji",sans-serif;line-height:1.55;margin:0;padding:0}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px}
+  header{position:sticky;top:0;background:linear-gradient(180deg,var(--bg) 85%,rgba(11,18,32,0));z-index:5;padding-bottom:8px}
+  .title{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .logo{height:42px;width:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#001b2e;font-weight:900;box-shadow:var(--shadow)}
+  h1{margin:0;font-size:26px;letter-spacing:.2px}
+  .subtitle{margin:4px 0 0 0;color:var(--muted);font-size:14px}
+  .grid{display:grid;gap:16px}
+  @media(min-width:900px){.grid.cols-2{grid-template-columns:1fr 1fr} .grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .chip{display:inline-block;background:var(--chip);padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);margin:2px 6px 2px 0}
+  .kpis{display:grid;gap:12px}
+  @media(min-width:900px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:#0b1830;border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+  .kpi .val{font-size:22px;font-weight:700}
+  .kpi .lbl{font-size:12px;color:var(--muted)}
+  .tagline{color:var(--muted);font-size:13px}
+  h2{margin:8px 0 12px 0;font-size:20px}
+  h3{margin:8px 0 10px 0;font-size:16px;color:#cfe1ff}
+  details{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#0c1a33}
+  details+details{margin-top:10px}
+  summary{cursor:pointer;font-weight:600}
+  code, pre{background:#0b1830;border:1px solid var(--border);border-radius:10px;color:#e6edf3}
+  code{padding:2px 6px}
+  pre{padding:14px;overflow:auto}
+  .imgframe{background:#071126;border:1px dashed #20304f;border-radius:14px;padding:10px;text-align:center;color:var(--muted)}
+  .imgframe img{max-width:100%;height:auto;border-radius:10px}
+  .tbl{width:100%;border-collapse:separate;border-spacing:0 8px}
+  .tbl th,.tbl td{padding:10px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:#0b1830}
+  .tbl th:first-child,.tbl td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px}
+  .tbl th:last-child,.tbl td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
+  .pill{padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#0b203a;color:#b6c2d9;font-size:12px}
+  footer{margin-top:24px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo">AI</div>
+        <div>
+          <h1>Gen Z Event-Driven Cross-Sell (CSI + RTIM + AEM)</h1>
+          <div class="subtitle">Markets: Hong Kong • Singapore • China • India • UAE • Indonesia</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Overview</h2>
+        <p>Deliver real-time, hyper-personalized cross-sell recommendations to Gen Z customers with stable income using an <strong>AI Cross‑Sell Index (CSI)</strong>, <strong>Real‑Time Interaction Management (RTIM)</strong>, and <strong>Adobe Experience Manager (AEM)</strong> for content.</p>
+        <div class="tagline">Key events: <span class="chip">Salary Increment</span><span class="chip">Account Exhaust</span><span class="chip">Travel Spend</span><span class="chip">High‑Value Transaction</span><span class="chip">High Purchase Frequency</span></div>
+      </div>
+      <div class="card">
+        <h2>KPIs</h2>
+        <div class="kpis">
+          <div class="kpi"><div class="val">+25–35%</div><div class="lbl">Cross‑sell conversion</div></div>
+          <div class="kpi"><div class="val">&lt; 1s</div><div class="lbl">Event→Offer latency</div></div>
+          <div class="kpi"><div class="val">2×</div><div class="lbl">Offer engagement</div></div>
+          <div class="kpi"><div class="val">&gt; 0.80</div><div class="lbl">Model AUC</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Life‑Event Triggers → Cross‑Sell Ideas</h2>
+      <table class="tbl">
+        <thead><tr><th>Event</th><th>Detection Logic</th><th>AI‑Led Offer Examples</th><th>Markets</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Salary Increment</strong></td>
+            <td>Monthly payroll ↑ &gt; 15%</td>
+            <td>Auto‑sweep to HYSA, <span class="pill">Robo‑Invest plan</span>, <span class="pill">Protection upgrade</span></td>
+            <td>SG • HK • IN • AE</td>
+          </tr>
+          <tr>
+            <td><strong>Account Exhaust</strong></td>
+            <td>Balance &lt; 10% of avg inflow + bills forecast</td>
+            <td><span class="pill">Overdraft/LOC</span>, spend insights, short‑term buffer</td>
+            <td>SG • IN • ID</td>
+          </tr>
+          <tr>
+            <td><strong>Travel Spend</strong></td>
+            <td>MCC: airlines/hotels, geo‑pattern</td>
+            <td><span class="pill">Travel FX wallet</span>, travel insurance, premium travel card</td>
+            <td>HK • SG • AE • CN</td>
+          </tr>
+          <tr>
+            <td><strong>High‑Value Txn</strong></td>
+            <td>Txn &gt; 2× personal baseline</td>
+            <td><span class="pill">BNPL/EMI</span>, lifestyle card upgrade</td>
+            <td>IN • ID • SG</td>
+          </tr>
+          <tr>
+            <td><strong>High Purchase Freq.</strong></td>
+            <td>3+ major e‑com buys / week</td>
+            <td><span class="pill">Cashback card</span>, curated offers bundle</td>
+            <td>IN • ID • SG</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Architecture (High‑Level)</h2>
+        <div class="imgframe">
+          <!-- Replace src with your Confluence attachment URL -->
+          <img alt="CSI Architecture Diagram" src="REPLACE_WITH_CONFLUENCE_IMAGE_URL_csi_architecture.png" />
+          <div class="tagline">Upload your PNG to Confluence and update the <code>src</code>.</div>
+        </div>
+        <ul>
+          <li><strong>Data &amp; Signals:</strong> Core banking, cards, app analytics, conversations, market.</li>
+          <li><strong>AI:</strong> Event detection → Propensity per product → CSI (0–100).</li>
+          <li><strong>Decision:</strong> RTIM computes Next Best Offer (NBO).</li>
+          <li><strong>Content:</strong> AEM headless delivers persona + CSI‑tier variants.</li>
+          <li><strong>Experience:</strong> Mobile tiles, push/in‑app, RM console.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Event‑Flow (Example)</h2>
+        <div class="imgframe">
+          <!-- Replace src with your Confluence attachment URL -->
+          <img alt="Event Flow Diagram" src="REPLACE_WITH_CONFLUENCE_IMAGE_URL_event_flow.png" />
+          <div class="tagline">Upload your PNG to Confluence and update the <code>src</code>.</div>
+        </div>
+        <ol>
+          <li>Salary +25% detected in stream.</li>
+          <li>AI → P(wealth)=0.85, P(insurance)=0.65 → CSI=88.</li>
+          <li>RTIM selects “SmartInvest”.</li>
+          <li>AEM returns Gen‑Z creative (celebratory tone).</li>
+          <li>Mobile shows personalized tile + “Why this offer?” (XAI).</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Security, Privacy &amp; Compliance</h2>
+        <ul>
+          <li><strong>Consent‑based</strong> data use; per‑market data residency.</li>
+          <li><strong>PII minimization</strong>; tokenize identifiers.</li>
+          <li><strong>XAI</strong> explanation panel for offers.</li>
+          <li><strong>Bias testing</strong> across gender/region cohorts.</li>
+          <li><strong>Audit trail</strong> for RTIM decisions &amp; models.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Localization Notes</h2>
+        <ul>
+          <li><strong>SG/HK:</strong> FX accounts, wealth &amp; ESG funds.</li>
+          <li><strong>CN:</strong> Ecosystem integrations (mini‑apps), gamified saving.</li>
+          <li><strong>IN/ID:</strong> BNPL/EMI, mutual funds, micro‑investing.</li>
+          <li><strong>UAE:</strong> Shariah‑compliant wealth, premium travel.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>API Contracts (Samples)</h2>
+      <h3>1) Event Ingestion – <code>POST /v1/events</code></h3>
+      <pre><code>Content-Type: application/json
+
+{
+  "customer_id": "c_9f1a7",
+  "event_type": "salary_increment|account_exhaust|travel_spend|high_value_txn|high_purchase_freq",
+  "event_ts": "2025-10-16T10:05:12Z",
+  "payload": {
+    "amount": 6500.00,
+    "currency": "HKD",
+    "pct_change_vs_baseline": 0.23,
+    "mcc": "AIRLINES"
+  }
+}</code></pre>
+
+      <h3>2) CSI Lookup – <code>GET /v1/customers/{id}/csi</code></h3>
+      <pre><code>200 OK
+{
+  "customer_id": "c_9f1a7",
+  "csi": 88,
+  "top_products": [
+    {"code":"WEALTH_STARTER","propensity":0.85},
+    {"code":"INS_PROTECT_PLUS","propensity":0.65}
+  ],
+  "explanations": [
+    "Salary increased 23%",
+    "Consistent surplus past 3 months",
+    "High travel frequency detected"
+  ]
+}</code></pre>
+
+      <h3>3) Next Best Offer – <code>POST /v1/offers/next</code></h3>
+      <pre><code>Request
+{
+  "customer_id": "c_9f1a7",
+  "context": {"channel":"mobile","locale":"en-SG"},
+  "csi": 88,
+  "eligible_products": ["WEALTH_STARTER","INS_PROTECT_PLUS","TRAVEL_WALLET"]
+}
+
+Response
+{
+  "offer_code": "WEALTH_STARTER",
+  "confidence": 0.82,
+  "contact_policy": {"cooldown_hours": 48, "max_impressions": 3},
+  "content_keys": {"persona":"genz","tier":"high","variant":"celebrate_raise"}
+}</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>JSON Schema – Event Payload</h2>
+      <pre><code>{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GenZ Cross-Sell Event",
+  "type": "object",
+  "required": ["customer_id","event_type","event_ts","payload"],
+  "properties": {
+    "customer_id": {"type":"string"},
+    "event_type": {"enum":["salary_increment","account_exhaust","travel_spend","high_value_txn","high_purchase_freq"]},
+    "event_ts": {"type":"string","format":"date-time"},
+    "payload": {
+      "type":"object",
+      "properties": {
+        "amount": {"type":"number"},
+        "currency": {"type":"string"},
+        "pct_change_vs_baseline": {"type":"number"},
+        "mcc": {"type":"string"},
+        "geo": {"type":"string"},
+        "notes": {"type":"string"}
+      }
+    }
+  }
+}</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>Implementation Checklist</h2>
+      <details open>
+        <summary>Data &amp; Events</summary>
+        <ul>
+          <li>Stream transactions to Kafka/Flink; derive event signals in near‑real‑time.</li>
+          <li>Persist features in a shared Feature Store; refresh incremental features.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Models &amp; CSI</summary>
+        <ul>
+          <li>Train per‑product propensity models; calibrate thresholds per market.</li>
+          <li>Compute CSI (0–100) and cache in Redis for &lt;100ms RTIM reads.</li>
+          <li>Enable XAI “Why this offer?” snippets.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>RTIM + AEM</summary>
+        <ul>
+          <li>Map events→offers in RTIM; enforce frequency caps &amp; fatigue rules.</li>
+          <li>In AEM, tag content by persona (Gen‑Z) + CSI tier + market locale.</li>
+        </ul>
+      </details>
+      <details>
+        <summary>Go‑Live &amp; Measurement</summary>
+        <ul>
+          <li>A/B test CSI‑driven journeys vs rule‑based control.</li>
+          <li>Track conversion, latency, engagement; retrain weekly.</li>
+        </ul>
+      </details>
+    </section>
+
+    <footer>
+      Built for Confluence HTML macro • Replace image <code>src</code> with your Confluence attachment URLs • No external assets
+    </footer>
+  </div>
+</body>
+</html>

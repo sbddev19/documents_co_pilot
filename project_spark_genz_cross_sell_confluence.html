@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Project SPARK — Gen Z Event‑Driven Cross‑Sell (CSI + RTIM + AEM)</title>
+<style>
+  :root{
+    --bg:#0b1220; --surface:#0f172a; --muted:#a0aec0; --text:#e6edf3; --accent:#60a5fa; --accent2:#34d399;
+    --warn:#f59e0b; --ok:#22c55e; --bad:#ef4444; --border:#1f2a44; --chip:#0b2545;
+    --radius:16px; --shadow:0 10px 30px rgba(2,12,27,.3);
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji",sans-serif;line-height:1.55;margin:0;padding:0}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px}
+  header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--bg) 85%,rgba(11,18,32,0));padding-bottom:8px}
+  .title{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .logo{height:44px;width:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06131f;font-weight:900;box-shadow:var(--shadow)}
+  h1{margin:0;font-size:26px;letter-spacing:.2px}
+  .subtitle{margin:4px 0 0 0;color:var(--muted);font-size:14px}
+  .grid{display:grid;gap:16px}
+  @media(min-width:980px){.grid.cols-2{grid-template-columns:1fr 1fr} .grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .chip{display:inline-block;background:var(--chip);padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);margin:2px 6px 2px 0}
+  .kpis{display:grid;gap:12px} @media(min-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:#0b1830;border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+  .kpi .val{font-size:22px;font-weight:700}
+  .kpi .lbl{font-size:12px;color:var(--muted)}
+  h2{margin:8px 0 12px 0;font-size:20px}
+  h3{margin:8px 0 10px 0;font-size:16px;color:#cfe1ff}
+  ul{margin:8px 0 8px 18px}
+  .imgframe{background:#071126;border:1px dashed #20304f;border-radius:14px;padding:10px;text-align:center;color:var(--muted);margin-bottom:8px}
+  .imgframe img{max-width:100%;height:auto;border-radius:10px}
+  .tbl{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:6px}
+  .tbl th,.tbl td{padding:10px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:#0b1830;vertical-align:top}
+  .tbl th:first-child,.tbl td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px}
+  .tbl th:last-child,.tbl td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
+  .pill{padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#0b203a;color:#b6c2d9;font-size:12px}
+  details{border:1px solid var(--border);border-radius:12px;padding:10px 12px;background:#0c1a33}
+  details+details{margin-top:10px}
+  summary{cursor:pointer;font-weight:600}
+  code, pre{background:#0b1830;border:1px solid var(--border);border-radius:10px;color:#e6edf3}
+  code{padding:2px 6px} pre{padding:14px;overflow:auto}
+  .note{font-size:12px;color:var(--muted)}
+  footer{margin-top:26px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo">AI</div>
+        <div>
+          <h1>Project SPARK — Gen Z Event‑Driven Cross‑Sell (CSI + RTIM + AEM)</h1>
+          <div class="subtitle">Markets: Hong Kong • Singapore • China • India • UAE • Indonesia</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>North‑Star & Overview</h2>
+        <p>Deliver <strong>real‑time, hyper‑personalized cross‑sell</strong> to Gen Z with stable salary using an <strong>AI Cross‑Sell Index (CSI)</strong>, <strong>Real‑Time Interaction Management (RTIM)</strong>, and <strong>Adobe Experience Manager (AEM)</strong>.</p>
+        <div class="tagline">
+          Key events: <span class="chip">Salary Increment</span><span class="chip">Account Exhaust</span><span class="chip">Travel Spend</span><span class="chip">High‑Value Transaction</span><span class="chip">High Purchase Frequency</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>KPIs</h2>
+        <div class="kpis">
+          <div class="kpi"><div class="val">+30%</div><div class="lbl">Cross‑sell Conversion</div></div>
+          <div class="kpi"><div class="val">&lt; 1s</div><div class="lbl">Event→Offer Latency</div></div>
+          <div class="kpi"><div class="val">2×</div><div class="lbl">Offer Engagement</div></div>
+          <div class="kpi"><div class="val">≥ 0.80</div><div class="lbl">Model AUC</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Segmentation (within Gen Z)</h2>
+        <ul>
+          <li><strong>Career Climbers:</strong> frequent salary growth → wealth starter, ILP, premium savings.</li>
+          <li><strong>Globe Trotters:</strong> travel MCCs → FX wallet, travel insurance, travel card.</li>
+          <li><strong>Digital Shoppers:</strong> e‑com frequency → cashback/BNPL, premium shopping card.</li>
+          <li><strong>Creators & Side‑Hustlers:</strong> sporadic big spends → LOC, protection, micro‑investing.</li>
+          <li><strong>Home Starters:</strong> rental/deposit spend → EMI/BNPL bundles.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Architecture (High‑Level)</h2>
+        <div class="imgframe">
+          <!-- Replace with Confluence attachment URL -->
+          <img src="REPLACE_WITH_CONFLUENCE_IMAGE_URL_csi_architecture.png" alt="CSI Architecture Diagram" />
+          <div class="note">Upload PNG to Confluence and replace <code>src</code>.</div>
+        </div>
+        <ul>
+          <li><strong>Data & Signals:</strong> core banking, cards, app analytics, conversations, market.</li>
+          <li><strong>AI:</strong> event detection → product propensities → CSI (0–100).</li>
+          <li><strong>Decision:</strong> RTIM picks Next‑Best‑Offer (NBO).</li>
+          <li><strong>Content:</strong> AEM Headless variants by persona × CSI tier × locale.</li>
+          <li><strong>Experience:</strong> Mobile tiles, push/in‑app, RM console.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Event Definitions & Local Thresholds</h2>
+      <table class="tbl">
+        <thead><tr><th>Event</th><th>Base Logic</th><th>HK / SG</th><th>CN</th><th>IN</th><th>AE</th><th>ID</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Salary Increment</strong></td><td>current_month_pay ≥ 1.15 × 3‑mo avg</td><td>1.10×</td><td>1.15×</td><td>1.20×</td><td>1.10×</td><td>1.20×</td></tr>
+          <tr><td><strong>Account Exhaust</strong></td><td>week_end_balance ≤ 0.10 × avg inflow AND bills_due_7d &gt; balance</td><td>0.10</td><td>0.08</td><td>0.12</td><td>0.10</td><td>0.15</td></tr>
+          <tr><td><strong>Travel Spend</strong></td><td>≥2 txns MCC∈{Airlines, Hotels, Duty Free} in 30d or geo egress</td><td>super‑app travel signal</td><td>same</td><td>UPI rail signals</td><td>lounge usage</td><td>OTA linkage</td></tr>
+          <tr><td><strong>High‑Value Txn</strong></td><td>txn_amount ≥ 2× personal 90d p95</td><td>1.8×</td><td>2.2×</td><td>2.0×</td><td>2.0×</td><td>2.0×</td></tr>
+          <tr><td><strong>High Purchase Freq.</strong></td><td>≥3 e‑com txns ≥ local p50 basket within 7d</td><td>HKD 350</td><td>CNY 300</td><td>INR 800</td><td>AED 120</td><td>IDR 250k</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Tune after 4 weeks via Bayesian update using uplift & false‑positive costs.</div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Offer Catalog by Event</h2>
+        <h3>Salary Increment</h3>
+        <ul>
+          <li><strong>Primary:</strong> SmartInvest (robo/portfolios), ILP/term top‑up, HYSA auto‑sweep</li>
+          <li><strong>Incentives:</strong> fee waiver 3m, step‑up APY, “invest your raise” badge</li>
+          <li><strong>Guardrails:</strong> DTI &lt; 35%, credit band min</li>
+        </ul>
+        <h3>Account Exhaust</h3>
+        <ul>
+          <li><strong>Primary:</strong> micro LOC, overdraft with rails, expense coach</li>
+          <li><strong>Incentives:</strong> 0% intro 30d, helpful tips over hard sell</li>
+          <li><strong>Guardrails:</strong> hardship flags → suppress sales</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Travel Spend</h3>
+        <ul>
+          <li><strong>Primary:</strong> FX wallet + multi‑currency card, travel insurance, premium travel card</li>
+          <li><strong>Incentives:</strong> lounge passes, FX fee rebate, partner miles</li>
+          <li><strong>Guardrails:</strong> sanctions/geo checks; CN mini‑program variants</li>
+        </ul>
+        <h3>High‑Value Txn</h3>
+        <ul>
+          <li><strong>Primary:</strong> BNPL/EMI conversion, lifestyle card upgrade, device protection</li>
+          <li><strong>Incentives:</strong> 1‑click EMI, tenure personalization</li>
+          <li><strong>Guardrails:</strong> affordability & KYC re‑check; merchant risk</li>
+        </ul>
+        <h3>High Purchase Frequency</h3>
+        <ul>
+          <li><strong>Primary:</strong> premium cashback card, curated partner bundles</li>
+          <li><strong>Incentives:</strong> stacked cashback week, creator collabs</li>
+          <li><strong>Guardrails:</strong> fatigue cap &lt; 3 impressions / 7d</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Data & Feature Store</h2>
+        <ul>
+          <li><strong>Streams:</strong> cards/UPI, ledger, payroll, device/app analytics, RM notes, market/FX, partners.</li>
+          <li><strong>Key features:</strong> spend_share_by_MCC_30d, volatility_ratio, salary_growth_Δ%, days_of_cash_left, product_holdings_onehot, response_history, sentiment, risk band.</li>
+          <li><strong>Storage:</strong> offline parquet + online feature store (Feast); TTL; p50 read &lt; 30ms.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Models & CSI</h2>
+        <ul>
+          <li><strong>Propensity (30/60/90d):</strong> XGBoost/LightGBM; calibrated (Platt/Isotonic).</li>
+          <li><strong>Embeddings:</strong> DeepFM/Autoencoder; HDBSCAN micro‑segments.</li>
+          <li><strong>NLP:</strong> EventNER & sentiment with risk/toxicity filters.</li>
+          <li><strong>CSI (0–100):</strong> meta‑ensemble over behavior/affinity/life‑events/engagement/sentiment/top‑propensity; weekly re‑learn.</li>
+          <li><strong>Latency budget (p95):</strong> detect ≤150ms → features ≤60ms → models ≤120ms → RTIM ≤150ms → AEM ≤200ms → render ≤200ms.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>RTIM Policy & Frequency Caps</h2>
+        <ul>
+          <li><strong>Eligibility:</strong> product_eligibility ∩ regulatory_ok ∩ risk_ok ∩ contact_policy_ok</li>
+          <li><strong>Tie‑breakers:</strong> expected_uplift×margin – cost → novelty → channel readiness</li>
+          <li><strong>Cadence:</strong> ≤1 high‑impact offer/day; 3 impressions/week; ≤1 push within 24h</li>
+          <li><strong>Suppression:</strong> 22:00–08:00 quiet hours; complaint/decline flags</li>
+          <li><strong>Exploration:</strong> Thompson Sampling 10–20% for variant learning</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>AEM Content Matrix</h2>
+        <table class="tbl">
+          <thead><tr><th>Persona</th><th>CSI Tier</th><th>Event</th><th>Creative Angle</th><th>CTA</th></tr></thead>
+          <tbody>
+            <tr><td>Career Climber</td><td>High</td><td>Salary</td><td>“Grow your raise” projection</td><td>Start with $X/mo</td></tr>
+            <tr><td>Globe Trotter</td><td>Med</td><td>Travel</td><td>“Beat FX fees, keep miles”</td><td>Open FX wallet</td></tr>
+            <tr><td>Digital Shopper</td><td>High</td><td>High‑freq</td><td>“Stacked cashback week”</td><td>Upgrade card</td></tr>
+            <tr><td>Creator</td><td>Med</td><td>High‑value</td><td>“Split smart, protect gear”</td><td>Convert to EMI</td></tr>
+            <tr><td>Home Starter</td><td>Low→Med</td><td>Exhaust</td><td>“Safety net, no surprises”</td><td>Set LOC</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Mobile Journeys</h2>
+        <h3>Salary Increment (High CSI)</h3>
+        <ol>
+          <li>Celebratory tile → raise projection (“Invest extra $X → +$Y in 10y”).</li>
+          <li>1‑tap goal (house/travel/skills) → prefilled SIP.</li>
+          <li>“Why this offer?” (XAI): salary Δ%, surplus trend, disclosure.</li>
+          <li>Invisible soft checks → instant onboarding; fallback to education path.</li>
+        </ol>
+        <h3>Account Exhaust (Med CSI)</h3>
+        <p>“Safety net” coach → overdraft sliders + repayment forecast; “bill smoothing” alternative.</p>
+        <h3>Travel Spend</h3>
+        <p>Trip card → prefilled wallet currencies, airline perks; 1‑tap insurance toggle.</p>
+        <h3>High‑Value Txn</h3>
+        <p>Post‑purchase snackbar → “Split this payment?” with personalized tenors.</p>
+      </div>
+      <div class="card">
+        <h2>Governance, Risk & Compliance</h2>
+        <ul>
+          <li>Explicit <strong>consent & purpose</strong>; per‑market data residency.</li>
+          <li><strong>PII minimization</strong>; tokenized IDs; strict RBAC.</li>
+          <li><strong>Fairness:</strong> parity checks; mitigate if disparate impact &gt; 5%.</li>
+          <li><strong>XAI:</strong> in‑app explanation strings from SHAP summaries.</li>
+          <li><strong>Audit:</strong> immutable logs (RTIM decisions, model versions, features).</li>
+          <li><strong>Edge cases:</strong> sanctioned geos, hardship flags → suppress sales offers.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Measurement & Experimentation</h2>
+        <ul>
+          <li>Primary: conversion, latency, engagement, AUC; Secondary: opt‑in, fatigue, CAC payback.</li>
+          <li>Design: CUPED / geo‑split; power for 1.5–2.0 pp uplift @ 90% power; sequential tests.</li>
+          <li>Dashboards: event counts, offer funnel, CSI drift, calibration/SHAP drift, suppress reasons.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Tech Blueprint</h2>
+        <ul>
+          <li><strong>Streaming:</strong> Kafka + Flink</li>
+          <li><strong>Feature Store:</strong> Feast + Redis (online)</li>
+          <li><strong>Models:</strong> Python/MLflow, XGBoost/LightGBM, ONNX/Triton serving</li>
+          <li><strong>RTIM:</strong> Adobe Journey Optimizer / Pega NBA</li>
+          <li><strong>AEM:</strong> Headless Content Fragments (persona × event × tier × locale)</li>
+          <li><strong>App:</strong> React Native/native; server‑driven UI tiles; deep links</li>
+          <li><strong>Observability:</strong> OpenTelemetry, Prometheus, Grafana</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>API Contracts (Samples)</h2>
+      <h3>1) Event Ingestion — <code>POST /v1/events</code></h3>
+      <pre><code>{
+  "customer_id": "c_9f1a7",
+  "event_type": "salary_increment|account_exhaust|travel_spend|high_value_txn|high_purchase_freq",
+  "event_ts": "2025-10-16T10:05:12Z",
+  "payload": {"amount":6500,"currency":"HKD","pct_change_vs_baseline":0.23,"mcc":"AIRLINES"}
+}</code></pre>
+      <h3>2) CSI Lookup — <code>GET /v1/customers/{id}/csi</code></h3>
+      <pre><code>{
+  "customer_id": "c_9f1a7",
+  "csi": 88,
+  "top_products": [{"code":"WEALTH_STARTER","propensity":0.85},{"code":"INS_PROTECT_PLUS","propensity":0.65}],
+  "explanations": ["Salary increased 23%","Consistent surplus 3m","High travel frequency"]
+}</code></pre>
+      <h3>3) Next Best Offer — <code>POST /v1/offers/next</code></h3>
+      <pre><code>Request: {
+  "customer_id":"c_9f1a7","context":{"channel":"mobile","locale":"en-SG"},"csi":88,
+  "eligible_products":["WEALTH_STARTER","INS_PROTECT_PLUS","TRAVEL_WALLET"]
+}
+Response: {
+  "offer_code":"WEALTH_STARTER","confidence":0.82,
+  "contact_policy":{"cooldown_hours":48,"max_impressions":3},
+  "content_keys":{"persona":"genz","tier":"high","variant":"celebrate_raise"}
+}</code></pre>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Rollout Plan (12 Weeks)</h2>
+        <ol>
+          <li>W1–2: data contracts, event rules, AEM matrix/copy per market.</li>
+          <li>W3–5: feature store, baseline propensities, CSI v1, integration mocks.</li>
+          <li>W6–7: RTIM decisioning, AEM headless wiring, mobile tiles.</li>
+          <li>W8–9: pilots (IN, SG), load/latency tuning, security review.</li>
+          <li>W10: A/B launch wave 1 (IN/SG), control = rules‑only.</li>
+          <li>W11–12: expand HK/AE; plan CN/ID ecosystem integrations.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>Decision Table (Starter)</h2>
+        <table class="tbl">
+          <thead><tr><th>If …</th><th>Then Offer</th><th>Else</th></tr></thead>
+          <tbody>
+            <tr><td>SalaryIncrement & CSI ≥ 75</td><td>Wealth Starter (celebrate_raise)</td><td>HYSA auto‑sweep</td></tr>
+            <tr><td>TravelSpend & CSI ≥ 60 & FX_fee_30d &gt; SGD 20</td><td>FX Wallet + rebate</td><td>Travel insurance</td></tr>
+            <tr><td>HighValueTxn & affordability_pass</td><td>EMI convert (9/12/18m)</td><td>Protection add‑on</td></tr>
+            <tr><td>Exhaust & not_in_hardship</td><td>Safety LOC (small)</td><td>Expense coach only</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Copy Snippets (Localized Tone)</h2>
+        <ul>
+          <li><strong>SG/HK:</strong> “Congrats on your raise—invest just <em>SGD 250/month</em> toward your next milestone.”</li>
+          <li><strong>IN:</strong> “Split your purchase in 3 clicks—no surprises, clear schedule.”</li>
+          <li><strong>AE:</strong> “Travel smarter: 0% FX fee wallet + lounge access.”</li>
+          <li><strong>ID:</strong> “Belanja lebih aman—cashback mingguan & kontrol pengeluaran.”</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>What We Need from Stakeholders</h2>
+        <ul>
+          <li>Product eligibility & credit guardrails per market.</li>
+          <li>Compliance sign‑off on event messaging & XAI strings.</li>
+          <li>AEM owners for content variants; translation/localization.</li>
+          <li>Mobile bandwidth for server‑driven tiles & deep links.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Event Flow (Example)</h2>
+      <div class="imgframe">
+        <!-- Replace with Confluence attachment URL -->
+        <img src="REPLACE_WITH_CONFLUENCE_IMAGE_URL_event_flow.png" alt="Event Flow Diagram" />
+        <div class="note">Upload PNG to Confluence and replace <code>src</code>.</div>
+      </div>
+      <ol>
+        <li>Salary +25% detected in stream → event fired.</li>
+        <li>AI: P(wealth)=0.85, P(insurance)=0.65 → CSI=88.</li>
+        <li>RTIM selects “SmartInvest”; AEM returns Gen‑Z creative.</li>
+        <li>Mobile shows personalized tile + “Why this offer?” (XAI).</li>
+        <li>Engagement & conversion loop back to retrain models.</li>
+      </ol>
+    </section>
+
+    <footer>
+      Confluence‑ready HTML • No external assets • Replace image <code>src</code> with attachment URLs • Project SPARK ©
+    </footer>
+  </div>
+</body>
+</html>

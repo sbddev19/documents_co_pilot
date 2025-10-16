@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CSI Blueprint — Gen Z Event-Driven Cross-Sell (HK • SG • CN • IN • AE • ID)</title>
+<style>
+  :root{
+    --bg:#0b1220; --surface:#0f172a; --muted:#a0aec0; --text:#e6edf3; --accent:#60a5fa; --accent2:#34d399;
+    --warn:#f59e0b; --ok:#22c55e; --bad:#ef4444; --border:#1f2a44; --chip:#0b2545;
+    --radius:16px; --shadow:0 10px 30px rgba(2,12,27,.3);
+  }
+  html,body{background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji",sans-serif;line-height:1.55;margin:0;padding:0}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px}
+  header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,var(--bg) 85%,rgba(11,18,32,0));padding-bottom:8px}
+  .title{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .logo{height:44px;width:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#06131f;font-weight:900;box-shadow:var(--shadow)}
+  h1{margin:0;font-size:26px;letter-spacing:.2px}
+  .subtitle{margin:4px 0 0 0;color:var(--muted);font-size:14px}
+  .grid{display:grid;gap:16px}
+  @media(min-width:980px){.grid.cols-2{grid-template-columns:1fr 1fr} .grid.cols-3{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .chip{display:inline-block;background:var(--chip);padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-size:12px;color:var(--muted);margin:2px 6px 2px 0}
+  .kpis{display:grid;gap:12px} @media(min-width:980px){.kpis{grid-template-columns:repeat(4,1fr)}}
+  .kpi{background:#0b1830;border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+  .kpi .val{font-size:22px;font-weight:700}
+  .kpi .lbl{font-size:12px;color:var(--muted)}
+  h2{margin:8px 0 12px 0;font-size:20px}
+  h3{margin:8px 0 10px 0;font-size:16px;color:#cfe1ff}
+  ul{margin:8px 0 8px 18px}
+  .imgframe{background:#071126;border:1px dashed #20304f;border-radius:14px;padding:10px;text-align:center;color:var(--muted);margin-bottom:8px}
+  .imgframe img{max-width:100%;height:auto;border-radius:10px}
+  .tbl{width:100%;border-collapse:separate;border-spacing:0 8px;margin-top:6px}
+  .tbl th,.tbl td{padding:10px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:#0b1830;vertical-align:top}
+  .tbl th:first-child,.tbl td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px}
+  .tbl th:last-child,.tbl td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
+  .pill{padding:4px 8px;border-radius:999px;border:1px solid var(--border);background:#0b203a;color:#b6c2d9;font-size:12px}
+  code, pre{background:#0b1830;border:1px solid var(--border);border-radius:10px;color:#e6edf3}
+  code{padding:2px 6px} pre{padding:14px;overflow:auto}
+  .note{font-size:12px;color:var(--muted)}
+  footer{margin-top:26px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo">AI</div>
+        <div>
+          <h1>CSI Blueprint — Gen Z Event-Driven Cross-Sell</h1>
+          <div class="subtitle">Regions: Hong Kong • Singapore • China • India • UAE • Indonesia</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Objective & Scope</h2>
+        <p>Build an <strong>AI-powered Cross-Sell Index (CSI)</strong> to rank each customer’s readiness to adopt the next best product (wealth, card upgrade, insurance, BNPL) in real time, driven by <em>salary increment, account exhaust, travel spend, high-value purchase, and high purchase frequency</em> events.</p>
+        <div class="tagline">
+          Events: <span class="chip">Salary Increment</span><span class="chip">Account Exhaust</span><span class="chip">Travel Spend</span><span class="chip">High-Value Txn</span><span class="chip">High Purchase Freq</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>KPIs</h2>
+        <div class="kpis">
+          <div class="kpi"><div class="val">+30%</div><div class="lbl">Cross-sell Conversion</div></div>
+          <div class="kpi"><div class="val">&lt; 1s</div><div class="lbl">Event→Offer Latency</div></div>
+          <div class="kpi"><div class="val">2×</div><div class="lbl">Offer Engagement</div></div>
+          <div class="kpi"><div class="val">≥ 0.80</div><div class="lbl">Model AUC</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>CSI Concept & Formula</h2>
+      <p><strong>CSI (0–100)</strong> is a normalized, meta-ensemble score combining product propensities, engagement, income growth, sentiment, and liquidity.</p>
+      <pre><code>CSI = σ(w1 * P + w2 * E + w3 * G + w4 * S + w5 * L) * 100
+Where: 
+  P = Product propensity (XGBoost/LightGBM)
+  E = Digital engagement score (app/web interactions)
+  G = Income growth features (salary trend, employer tier)
+  S = Sentiment (chatbot/NLP)
+  L = Liquidity (days-of-cash-left, variance)
+Weights (w*) optimized weekly via Bayesian optimization on uplift.</code></pre>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Data Foundation</h2>
+        <ul>
+          <li><strong>Sources:</strong> Core banking, cards/UPI, FX wallets, app/web logs, bureau, employer tier, market data.</li>
+          <li><strong>Event Engine:</strong> Stream processing (Kafka/Flink) to emit salary/travel/purchase events.</li>
+          <li><strong>Feature Store:</strong> Offline Parquet + Online Redis/Feast (TTL 7–30d, p50 read &lt;30ms).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Feature Examples</h2>
+        <ul>
+          <li>Salary stability, Δ% MoM, pay-cycle variance; employer_tier.</li>
+          <li>Spend_share_by_MCC_30d, luxury_ratio, volatility_ratio.</li>
+          <li>Savings_to_income, days_of_cash_left (forecast), bills_due_7d.</li>
+          <li>App sessions, dwell time, offer reactions, journey funnels.</li>
+          <li>Chat sentiment (BERT), toxicity filter, RM note signals.</li>
+          <li>Peer cluster embedding distance.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Model Stack</h2>
+        <ul>
+          <li><strong>Propensity:</strong> per product (30/60/90d), time-aware cross-validation, calibrated probabilities.</li>
+          <li><strong>Embeddings:</strong> autoencoder/transformer on holdings + spend sequences; 32–64D vectors → micro-segments (HDBSCAN).</li>
+          <li><strong>NLP:</strong> Event extraction + sentiment from opted-in channels; risk filters.</li>
+          <li><strong>Meta-ensemble:</strong> combine propensities + embeddings + context → CSI (0–100).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Event-Driven Pipeline</h2>
+        <ol>
+          <li>Event captured → Kafka topic → Flink pattern matches.</li>
+          <li>Enrich with customer context; fetch features from online store.</li>
+          <li>Score propensities + CSI via Triton/ONNX service.</li>
+          <li>Post CSI and Top-N products to RTIM.</li>
+          <li>RTIM applies eligibility, fatigue caps, and policy rules.</li>
+          <li>AEM serves persona × tier × event × locale creative.</li>
+          <li>Offer rendered in mobile/push; feedback loop updates labels.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>RTIM Decisioning & Policy</h2>
+        <pre><code>IF (CSI &gt; 75 AND salary_event)      =&gt; Wealth Starter
+ELSE IF (CSI &gt; 60 AND travel_event)  =&gt; FX Wallet + Lounge
+ELSE IF (CSI &gt; 55 AND high_purchase) =&gt; Premium Cashback Card
+ELSE                                   Financial Wellness Tips</code></pre>
+        <ul>
+          <li>Max 3 impressions/week; at most 1 high-impact offer/24h.</li>
+          <li>Suppress on complaints/declines; quiet hours 22:00–08:00.</li>
+          <li>Thompson Sampling 10–20% for exploration.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>AEM Content Strategy</h2>
+        <ul>
+          <li>Headless fragments keyed by <code>{persona, tier, event, locale}</code>.</li>
+          <li>Copy tone: SG/HK aspirational, IN/ID friendly, AE premium, CN mini-app visuals.</li>
+          <li>CTA personalization (e.g., “Start with $X/mo”, “Open FX wallet”).</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Governance & Compliance</h2>
+        <ul>
+          <li>Consent & purpose limitation; data residency by region (PDPA/PDPO/PIPL/DPDP).</li>
+          <li>PII minimization, tokenization, strict RBAC.</li>
+          <li>Bias audits: mitigate if disparity &gt;5% by gender/region.</li>
+          <li>XAI strings in-app (SHAP summaries: salary +23%, travel spend 3x, surplus trend).</li>
+          <li>Audit trails: model versions, features, RTIM decisions.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Monitoring & Feedback</h2>
+        <table class="tbl">
+          <thead><tr><th>Metric</th><th>Description</th><th>Target</th></tr></thead>
+          <tbody>
+            <tr><td>CSI drift</td><td>Distribution shift vs. baseline</td><td>&lt;10% / week</td></tr>
+            <tr><td>Offer conversion</td><td>CTR → booking</td><td>+30%</td></tr>
+            <tr><td>Latency</td><td>Event→Offer time</td><td>&lt;1s</td></tr>
+            <tr><td>Engagement</td><td>Post-offer interactions</td><td>+25%</td></tr>
+            <tr><td>Bias index</td><td>Fairness check</td><td>≤5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Example CSI Output (per customer)</h2>
+        <pre><code>{
+  "customer_id": "C_102938",
+  "csi_score": 88,
+  "top_products": [
+    {"product_code": "WEALTH_STARTER", "probability": 0.85},
+    {"product_code": "FX_WALLET", "probability": 0.70},
+    {"product_code": "INS_PROTECT", "probability": 0.62}
+  ],
+  "explanations": [
+    "Salary increased 20% in last 3 months",
+    "Travel spend detected (3x in 30 days)",
+    "Savings balance stable"
+  ]
+}</code></pre>
+      </div>
+      <div class="card">
+        <h2>Business Impact Projection</h2>
+        <table class="tbl">
+          <thead><tr><th>KPI</th><th>Current</th><th>Target (6 mo)</th><th>Impact</th></tr></thead>
+          <tbody>
+            <tr><td>Cross-sell rate</td><td>8%</td><td>12%</td><td>+50% uplift</td></tr>
+            <tr><td>Offer acceptance</td><td>5%</td><td>8%</td><td>+60% engagement</td></tr>
+            <tr><td>Conversion latency</td><td>2.5s</td><td>0.9s</td><td>64% faster</td></tr>
+            <tr><td>Manual segmentation</td><td>100%</td><td>&lt;10%</td><td>90% automation</td></tr>
+            <tr><td>Marketing ROI</td><td>2.8x</td><td>4.2x</td><td>+50% gain</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Tech Stack Summary</h2>
+        <table class="tbl">
+          <thead><tr><th>Layer</th><th>Tools</th></tr></thead>
+          <tbody>
+            <tr><td>Event Stream</td><td>Kafka / Flink</td></tr>
+            <tr><td>Data Store</td><td>Snowflake / BigQuery</td></tr>
+            <tr><td>Feature Store</td><td>Feast + Redis</td></tr>
+            <tr><td>Models</td><td>XGBoost / LightGBM / BERT</td></tr>
+            <tr><td>Serving</td><td>MLflow + Triton / ONNX</td></tr>
+            <tr><td>Decisioning</td><td>RTIM (Adobe / Pega)</td></tr>
+            <tr><td>Content</td><td>AEM Headless API</td></tr>
+            <tr><td>Visualization</td><td>PowerBI / Grafana</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Diagrams</h2>
+        <div class="imgframe">
+          <!-- Replace with Confluence attachment URLs -->
+          <img src="REPLACE_WITH_CONFLUENCE_IMAGE_URL_csi_architecture.png" alt="CSI Architecture Diagram" />
+          <div class="note">Upload and replace <code>src</code> with the Confluence attachment URL.</div>
+        </div>
+        <div class="imgframe">
+          <img src="REPLACE_WITH_CONFLUENCE_IMAGE_URL_event_flow.png" alt="Event Flow Diagram" />
+          <div class="note">Upload and replace <code>src</code> with the Confluence attachment URL.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>API Contracts (Samples)</h2>
+      <h3>1) Event Ingestion — <code>POST /v1/events</code></h3>
+      <pre><code>{
+  "customer_id": "c_9f1a7",
+  "event_type": "salary_increment|account_exhaust|travel_spend|high_value_txn|high_purchase_freq",
+  "event_ts": "2025-10-16T10:05:12Z",
+  "payload": {"amount":6500,"currency":"HKD","pct_change_vs_baseline":0.23,"mcc":"AIRLINES"}
+}</code></pre>
+      <h3>2) CSI Lookup — <code>GET /v1/customers/{id}/csi</code></h3>
+      <pre><code>{
+  "customer_id": "c_9f1a7",
+  "csi": 88,
+  "top_products": [{"code":"WEALTH_STARTER","propensity":0.85},{"code":"INS_PROTECT_PLUS","propensity":0.65}],
+  "explanations": ["Salary increased 23%","Consistent surplus 3m","High travel frequency"]
+}</code></pre>
+      <h3>3) Next Best Offer — <code>POST /v1/offers/next</code></h3>
+      <pre><code>Request: {
+  "customer_id":"c_9f1a7","context":{"channel":"mobile","locale":"en-SG"},"csi":88,
+  "eligible_products":["WEALTH_STARTER","INS_PROTECT_PLUS","TRAVEL_WALLET"]
+}
+Response: {
+  "offer_code":"WEALTH_STARTER","confidence":0.82,
+  "contact_policy":{"cooldown_hours":48,"max_impressions":3},
+  "content_keys":{"persona":"genz","tier":"high","variant":"celebrate_raise"}
+}</code></pre>
+    </section>
+
+    <section class="grid cols-2">
+      <div class="card">
+        <h2>Rollout Plan (12 Weeks)</h2>
+        <ol>
+          <li>W1–2: data contracts, event rules, AEM matrix/copy per market.</li>
+          <li>W3–5: feature store, baseline propensities, CSI v1, integration mocks.</li>
+          <li>W6–7: RTIM decisioning, AEM headless wiring, mobile tiles.</li>
+          <li>W8–9: pilots (IN, SG), load/latency tuning, security review.</li>
+          <li>W10: A/B launch wave 1 (IN/SG), control = rules-only.</li>
+          <li>W11–12: expand HK/AE; plan CN/ID ecosystem integrations.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h2>Stakeholder Inputs Required</h2>
+        <ul>
+          <li>Eligibility & credit guardrails by product/market.</li>
+          <li>Compliance sign-off on event messaging & XAI text.</li>
+          <li>AEM content production for variants; localization.</li>
+          <li>Mobile app capacity for server-driven tiles & deep links.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      Confluence-ready HTML • No external assets • Replace diagram <code>src</code> URLs with your attachments • CSI Blueprint ©
+    </footer>
+  </div>
+</body>
+</html>
