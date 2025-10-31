@@ -1,0 +1,32 @@
+#
+Risk Description
+Impact
+Affected Journeys / Areas
+Environment(s) Impacted
+Mitigation / Action Plan
+Owner / Support Needed
+Target / Go-Live Impact
+1
+SG SC Mobile not having valid environment; 4 payment journeys impacted. Only 1 working. Payments team suggested a mock for local testing only.
+High – SIT and UAT testing blocked for critical payment flows.
+Pay Now, Local Transfer, Pay Bills, Pay Credit Card PIN
+SIT, UAT
+Payments team to provide valid working environment; complete testing in SIT/UAT before 29th. Mock can be used only for developer-level testing.
+Payments Team / DevOps
+Go-Live on 29th may be delayed if testing not completed.
+2
+Data-Locker and Credit Card PIN-Change impacted by CST API which loads Services page.
+Medium – Two journeys blocked in SIT and UAT.
+Data-Locker, Credit Card PIN-Change
+SIT, UAT
+CST team to fix API issue; validate dependent services to enable full flow testing.
+CST Team / QA
+SIT and UAT completion at risk if CST API not available.
+3
+OAT environment unavailable for deployment due to Catalyst production code move; OAT pipelines not in working state.
+High – No OAT validation possible.
+Deployment pipelines, end-to-end testing
+OAT
+DevOps to fix and validate all OAT pipelines; ensure stability before Go-Live.
+DevOps Team
+Go-Live readiness impacted; must be resolved before 29th.
