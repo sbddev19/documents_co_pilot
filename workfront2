@@ -1,0 +1,19 @@
+Subject: Workfront–Adobe IMS Integration for Agency Access (SCB Campaigns)
+
+Dear [Name/Team],
+
+Following our recent discussions, I understand the requirement to enable Workfront to allow agency workers (SCB) to collaborate on SC campaigns using Adobe Creative Cloud, integrated with Adobe IMS via agency SSO (non-SC).
+
+This integration, however, requires additional architectural review and governance alignment due to the following reasons:
+	1.	The setup needs to go through the CCH pipeline, which is not yet business live for AEM—noting that the ITAM is shared between AEM and Workfront.
+	2.	As agreed with Martin, we will take this up post AEM business go-live to prevent any potential impact on the CCH pipeline.
+	3.	The CCH team has also confirmed that no new clearance requests will be processed in November.
+
+In the interim, we propose to proceed with an Incremental Solution Intent (SI) for preliminary review and approval by the architecture team. This SI will specifically cover the Workfront agency access enablement, since the current AEM ITAM does not permit agency access.
+
+To move forward, the following steps will be required:
+	•	Preparation and clearance of a separate Incremental Solution Intent (SI),
+	•	Incremental CCH and CISO approvals, and
+	•	Coordination with Adobe to validate how Workfront can securely grant agency workers access to Adobe Creative Cloud tasks initiated from SCB Workfront.
+
+I will schedule a call with Dhas (Domain Architect) to review this requirement in detail and define a way forward for this complex integration.
