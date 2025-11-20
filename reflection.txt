@@ -1,0 +1,28 @@
+This year has been a period of significant growth, impact, and responsibility. Stepping into the role of Chapter Lead in the early months, I focused on stabilising close to 20 squads, providing them with robust frontend technology support, effective resourcing management, and consistent stakeholder alignment. This foundational work helped ensure that teams were set up for predictable delivery and engineering excellence.
+
+One of my key contributions was the creation of a new configurable React base code framework, designed to standardize and scale frontend development across squads. This framework has accelerated onboarding, reduced rework, and provided a future-ready foundation for building modular, scalable frontend experiences.
+
+I also played a crucial role in the DC Migration program, actively supporting multiple teams—including CRES, COS, and RTOB—to ensure their applications transitioned smoothly with minimal disruption. This required deep technical collaboration as well as strong cross-team coordination.
+
+Mid-year, I successfully transitioned into the role of Engineering Lead for the Content Management space, taking ownership of end-to-end engineering processes. My focus was on establishing strong delivery mechanisms, improving engineering hygiene, and enabling internal teams to scale for independent and predictable deliveries. Through training, guidance, and process improvements, the teams became more structured and self-sufficient.
+
+Throughout the year, I contributed to shaping the organization’s technology roadmap—proposing solution intents for key initiatives and proactively collaborating with architects to ensure alignment with enterprise architecture and long-term strategy.
+
+A notable accomplishment was taking charge of the MGM squad, which came with extremely challenging timelines. Within just two months, I was able to stabilize the squad, streamline their development cycle, and lead them to a successful sign-off, demonstrating my ability to handle critical projects under pressure.
+
+⸻
+
+⭐ Key Achievements
+	•	Stabilized 20+ squads with technology leadership, resourcing oversight, and stakeholder management.
+	•	Delivered a configurable React base framework, improving scalability and standardization across teams.
+	•	Supported major DC migration efforts for CRES, COS, and RTOB with cross-team technology collaboration.
+	•	Transitioned into Engineering Lead for Content Management, strengthening processes and team self-sufficiency.
+	•	Drove engineering best practices and enabled teams to deliver independently with improved quality.
+	•	Contributed to solution intent proposals and architectural discussions for strategic initiatives.
+	•	Successfully stabilised and delivered the MGM squad within a compressed two-month timeline.
+
+⸻
+
+📈 Overall Reflection
+
+This year has been both demanding and deeply rewarding. The combination of technical ownership, leadership responsibilities, and strategic contributions has strengthened my capability as an engineering leader. I look forward to continuing this trajectory—scaling teams, evolving architecture, and driving impactful deliveries across the organization.
