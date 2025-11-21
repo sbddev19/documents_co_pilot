@@ -1,0 +1,963 @@
+Technical Design Document
+
+Adobe Experience Manager (AEM) with Imperva WAF + CDN, NGINX Redirection Layer, and S3 as CDN Storage
+
+⸻
+
+1. Scope & Objectives
+
+1.1 Scope
+
+This document covers:
+	•	Public website delivery using Adobe Experience Manager (AEM).
+	•	Imperva as:
+	•	External WAF (Web Application Firewall)
+	•	CDN cache / edge delivery
+	•	Origin routing (AEM vs S3)
+	•	NGINX as an internal reverse proxy + redirection and URL management layer in front of AEM publish.
+	•	AWS S3 as a static asset origin (CDN storage) configured on Imperva side.
+
+1.2 Objectives
+	•	Provide secure, high-performance delivery of AEM-hosted sites.
+	•	Offload as much as possible to Imperva edge cache + S3.
+	•	Centralize security & HTTP policy in Imperva/NGINX while keeping AEM simple.
+	•	Standardize URL patterns, redirects, cache headers, and logging.
+
+⸻
+
+2. High-Level Architecture
+Client (Browser / App)
+        |
+        v
+   Public DNS
+  (www.example.com)
+        |
+        v
+   Imperva WAF + CDN
+        |     \
+        |      \
+        |       +--> Origin 2: AWS S3 (static content, images, assets)
+        v
+Origin 1: NGINX (reverse proxy / redirect layer)
+        |
+        v
+   AEM Publish Tier
+ (1..n AEM publish instances)
+
+
+
+2.2 Origins
+	•	Origin 1: NGINX
+	•	Connects to AEM Publish over internal network.
+	•	Handles:
+	•	Legacy URL redirects (301/302)
+	•	HTTP → HTTPS redirection (if needed internally)
+	•	Canonical host redirects (e.g., example.com → www.example.com)
+	•	Basic header normalization.
+	•	Origin 2: S3 Bucket
+	•	Holds static assets:
+	•	Versioned static files (/static/*)
+	•	Heavy media / images if needed.
+	•	Configured as a separate HTTP(S) origin in Imperva.
+
+⸻
+
+3. DNS & Network Topology
+
+3.1 DNS
+	•	www.example.com
+→ CNAME → <imperva-edge-alias>.impervadns.net (example placeholder)
+
+(Optional)
+	•	static.example.com
+→ CNAME → <imperva-static-edge>.impervadns.net
+(Mapped to S3 origin via Imperva)
+
+3.2 Network Zones
+	•	Public zone: Client → Imperva (Internet-facing).
+	•	DMZ / Edge zone: Imperva → NGINX → AEM (over secure network).
+	•	Private zone: AEM Publish instances (no direct Internet exposure).
+	•	AWS zone: S3 bucket (public-only-via-Imperva or private with OAI / signed origin access).
+
+⸻
+
+4. Imperva Configuration Details
+
+4.1 Imperva Site Configuration
+	•	Site / Application in Imperva portal
+	•	Primary hostname: www.example.com
+	•	Additional hostnames: example.com, static.example.com (if used).
+	•	Protocols: HTTPS only (redirect HTTP → HTTPS at Imperva).
+
+4.2 Origins
+	1.	Origin: NGINX
+	•	Type: Web Server
+	•	Host: nginx.internal.example.com (or IP)
+	•	Port: 443 (preferred) or 80
+	•	TLS:
+	•	If TLS: set Origin Certificate (internal CA or self-signed; configure Imperva to trust it).
+	•	Health checks:
+	•	Path: /healthcheck.html or /system/health
+	•	Interval: 30s–60s, 2–3 retries.
+	2.	Origin: AWS S3
+	•	Type: S3 / Object Storage
+	•	Host: <bucket-name>.s3.<region>.amazonaws.com
+	•	Access:
+	•	Either public read-only bucket (with IP whitelist to Imperva)
+	•	Or private bucket with:
+	•	Bucket policy allowing only Imperva’s IP ranges
+	•	Or signed origin access mechanism if supported in your setup.
+	•	Health check:
+	•	Path /health.txt or a lightweight asset.
+
+4.3 Routing Rules (Imperva)
+
+Example rule-set:
+	1.	Static Assets via S3
+	•	Condition: URL path starts with /static/ OR host is static.example.com
+	•	Action: Route to Origin “S3-static-origin”
+	•	Caching:
+	•	Cache-Control: public, max-age=31536000 (1 year for versioned files)
+	•	Use Query string and path as cache key.
+	2.	AEM Dynamic Content via NGINX
+	•	Condition: default (all unmatched)
+	•	Action: Route to Origin “nginx-aem-origin”
+	•	Caching:
+	•	Respect origin headers from NGINX/AEM.
+	•	For HTML: typically short TTL (30s–300s) or “no-store” for highly dynamic pages.
+	3.	Legacy paths to be redirected at Imperva (optional)
+	•	Rules to return HTTP 301 for specific patterns:
+	•	/old-page → /new-page
+	•	http:// → https://
+	•	This avoids unnecessary hop to NGINX for simple redirects.
+
+4.4 WAF Security Policies
+	•	Core rules:
+	•	OWASP Top 10 signatures (SQLi, XSS, RCE, etc.).
+	•	Protocol enforcement: disallow invalid methods (TRACE, TRACK, etc.).
+	•	Geo-blocking / throttling if needed.
+	•	Custom rules:
+	•	Whitelist known legitimate integrations (monitoring, search crawlers).
+	•	Block specific patterns: e.g., /system/console (AEM admin), etc.
+	•	Rate Limiting / Bot Mitigation:
+	•	Enable bot classification & challenge.
+	•	Set per-IP and per-path thresholds.
+
+4.5 TLS & Certificates
+	•	Imperva terminates TLS:
+	•	Public certificate for www.example.com (managed in Imperva).
+	•	Imperva → NGINX:
+	•	Prefer HTTPS:
+	•	NGINX uses internal certificate (self-signed / internal CA).
+	•	Imperva configured to validate or ignore depending on your security posture.
+
+⸻
+
+5. NGINX Configuration Details
+
+NGINX acts as reverse proxy + redirect layer between Imperva and AEM.
+
+5.1 NGINX High-Level Responsibilities
+	•	Reverse proxy to AEM publish.
+	•	Enforce basic security headers.
+	•	Handle:
+	•	Canonical domain redirection (if traffic hits internal hostnames).
+	•	Custom URL rewrites (if not done at Imperva).
+	•	Optional: serve simple health-check pages.
+
+5.2 Sample NGINX Config (Simplified)
+
+
+6. AEM Publish & Caching Strategy
+
+6.1 AEM Publish Tier
+	•	2+ AEM publish instances behind NGINX upstream.
+	•	Each instance:
+	•	Hosts the site content under /content/<site> and /etc.clientlibs/... (if using clientlibs).
+	•	Has only internal access (no public exposure).
+
+6.2 Cache-Control Strategy
+
+You want AEM → NGINX → Imperva to respect a coherent set of cache headers:
+	1.	HTML Pages
+	•	Cache-Control: max-age=60, public or no-cache depending on freshness requirements.
+	•	Often short TTL + Imperva provides global edge caching.
+	2.	Clientlibs / Static JS/CSS (from AEM or S3)
+	•	Use fingerprinted filenames (hash in filename).
+	•	Cache-Control: public, max-age=31536000, immutable.
+	3.	Personalized or authenticated content
+	•	Cache-Control: no-store, private and Vary: Cookie.
+
+6.3 AEM Dispatcher (Optional)
+Imperva -> NGINX -> Apache HTTPD + Dispatcher -> AEM Publish
+
+
+•	NGINX points to Apache dispatcher instead of direct publish.
+	•	Dispatcher handles caching for HTML and clientlibs; Imperva then caches that output again at edge.
+	•	This can give you 2-layer caching (dispatcher+Imperva) but adds complexity.
+
+⸻
+
+7. S3 Bucket Design (CDN Storage)
+
+7.1 Bucket Structure
+
+Bucket: aem-static-prod-example
+
+7.2 Access & Security
+	•	S3 bucket made non-public if possible:
+	•	Bucket policy: allow s3:GetObject only from Imperva’s IPs / IAM role.
+	•	Objects have:
+	•	Content-Type properly set (text/css, application/javascript, image/png, etc.).
+	•	Cache-Control header (long TTLs).
+
+7.3 CI/CD for Static Assets
+	•	Build pipeline:
+	1.	Frontend build (webpack/rollup) → produce /dist folder.
+	2.	Upload /dist to s3://aem-static-prod-example/static/vX/.
+	3.	Invalidate Imperva cache for selected paths:
+	•	/static/vX/* or /static/* depending on strategy.
+	4.	Update AEM configs / ClientLibs to point to new vX.
+
+⸻
+
+8. Request Flows
+
+8.1 HTML Page Request
+	1.	Client requests https://www.example.com/home.
+	2.	DNS resolves www.example.com → Imperva.
+	3.	Imperva:
+	•	Runs WAF checks.
+	•	Cache lookup:
+	•	If HIT, return from edge.
+	•	If MISS, forward to origin NGINX.
+	4.	NGINX:
+	•	Proxies to aem_publish upstream.
+	5.	AEM Publish:
+	•	Generates HTML.
+	•	Sets headers (Cache-Control, etc.).
+	6.	NGINX returns response to Imperva.
+	7.	Imperva:
+	•	Caches response per policy.
+	•	Returns to client.
+
+8.2 Static Asset Request (S3)
+	1.	Client requests https://www.example.com/static/v1/js/main.js
+(or https://static.example.com/static/v1/js/main.js).
+	2.	Imperva:
+	•	WAF checks.
+	•	Route based on path/host to S3 origin.
+	3.	S3 returns asset.
+	4.	Imperva caches long-term at edge.
+	5.	Response returns to client.
+
+⸻
+
+9. Security Considerations
+
+9.1 AEM Attack Surface
+	•	AEM author is not exposed via Imperva.
+	•	Only publish instances accessible (and only via NGINX).
+	•	Ensure paths like:
+	•	/system/console
+	•	/crx/de
+	•	/libs/cq/core/content/login.html
+are blocked or protected at:
+	•	Imperva level (WAF rule) and/or
+	•	NGINX level (return 403).
+
+9.2 Security Headers
+
+Applied at NGINX or AEM:
+	•	Strict-Transport-Security: max-age=31536000; includeSubDomains
+	•	Content-Security-Policy (CSP) as per app requirements.
+	•	X-Frame-Options, X-Content-Type-Options, Referrer-Policy.
+
+9.3 Logging & Monitoring
+	•	Imperva logs:
+	•	WAF events, blocked requests.
+	•	Edge cache stats, origin errors.
+	•	NGINX access/error logs:
+	•	Correlate with Imperva logs using request IDs (e.g., add header X-Request-ID at Imperva, log it in NGINX).
+	•	AEM logs:
+	•	Standard request.log + error.log.
+
+⸻
+
+10. Non-Functional Requirements
+
+10.1 Performance
+	•	Imperva edge caching for:
+	•	Static assets: TTL ≥ 1 day (ideally 1 year for versioned).
+	•	HTML content: small but non-zero TTL where possible.
+	•	NGINX tuned for:
+	•	Keepalive with AEM publish.
+	•	Reasonable buffer sizes and timeouts.
+
+10.2 High Availability
+	•	AEM publish: 2+ nodes.
+	•	NGINX: 2+ instances behind internal load balancer or VIP.
+	•	Imperva: managed HA by provider.
+
+10.3 DR / Failover
+	•	Option 1: Backup S3 bucket and DR AEM environment in another region.
+	•	Option 2: Imperva routing rules to switch origin to DR NGINX/AEM.
+
+⸻
+
+11. Open Points / Decisions
+
+You can adapt this section for your org:
+	1.	Use AEM dispatcher or direct publish behind NGINX?
+	2.	Which specific Imperva WAF policy set for this app?
+	3.	Do we use a dedicated host static.example.com for S3, or same host under /static/?
+	4.	Logging pipeline: ship Imperva, NGINX, and AEM logs to SIEM?
+
+⸻
+
+If you tell me:
+	•	Your actual domains,
+	•	Whether you’re using dispatcher,
+	•	And if you prefer single domain or separate static domain,
+
+I can tailor this into a final, ready-to-send PDF-style spec with concrete hostnames and exact example rules.
+
+Technical Design – Introducing NGINX Proxy Tier When Imperva Rules Are Saturated for sc.com
+
+1. Context & Problem Statement
+
+1.1 Existing Situation
+	•	The public banking domain sc.com (and subdomains) is fronted by Imperva.
+	•	Imperva currently handles:
+	•	WAF (ruleset is already complex, centrally managed by Security)
+	•	L3/L4 & L7 DDoS protection
+	•	CDN caching and TLS termination
+	•	Over time, Imperva rules for sc.com have become:
+	•	Highly complex (large number of URL-based rules, rewrites, redirects).
+	•	Change-controlled and tightly governed by central security.
+	•	Hard/slow to maintain for application-specific routing and redirection.
+
+1.2 Problem
+
+For new applications / microsites under sc.com (e.g., AEM sites, campaign pages), teams need:
+	•	New redirects and URL rewrites (e.g., /old-product → /new-product).
+	•	Application-specific routing logic (e.g., /aem/* → AEM, /legacy/* → legacy app).
+	•	Fast change cycles (per sprint, even per release).
+
+However:
+	•	Adding every redirect / rewrite / routing rule directly into Imperva is no longer feasible:
+	•	Governance: security team does not want Imperva to be treated as an app router.
+	•	Complexity: risk of misconfigurations (rules collide, impact other paths/apps).
+	•	Operational overhead: every small redirect becomes a WAF change ticket.
+
+Conclusion: We need an application-facing proxy layer (NGINX / NGINX Plus) behind Imperva, so Imperva stays focused on security and edge caching, and all app routing & redirection logic moves to a dedicated, dev-owned proxy.
+
+⸻
+
+2. Target Responsibilities Split
+
+2.1 Imperva Responsibilities (stay focused)
+	•	Security perimeter & reliability
+	•	WAF (OWASP Top 10 protection, custom signatures).
+	•	DDoS protection.
+	•	Bot mitigation and IP reputation filtering.
+	•	TLS termination & CDN
+	•	Public certificates for sc.com & subdomains.
+	•	Edge caching for static content (depending on headers).
+	•	Minimal HTTP logic
+	•	HTTP → HTTPS redirect (global).
+	•	Basic host → origin mapping (e.g., www.sc.com → proxy origin).
+	•	Very limited, generic rules only where absolutely necessary.
+
+2.2 New NGINX / NGINX Plus Responsibilities
+	•	Application routing
+	•	Path-based routing for AEM / legacy / microservices:
+	•	/aem/* → AEM publish
+	•	/legacy/* → legacy Java app
+	•	/api/* → backend APIs
+	•	Redirections
+	•	All new business redirects:
+	•	Legacy URLs → new URLs.
+	•	Campaign URLs → deep links.
+	•	SEO redirects (301) and temporary redirects (302).
+	•	URL Rewrites & Normalization
+	•	Trailing slash normalization.
+	•	Case-insensitive redirects (if needed).
+	•	Country / language routing, if required.
+	•	Header normalization
+	•	Add/remove headers for backend services.
+	•	Inject correlation IDs for observability.
+
+Imperva remains “clean” and generic; the proxy becomes the app team’s programmable edge.
+
+Client (Browser / App)
+        |
+        v
+   Public DNS
+  (www.sc.com)
+        |
+        v
+   Imperva (WAF + CDN + DDoS)
+        |
+        |  (single or minimal origin mapping for www.sc.com)
+        v
+   NGINX / NGINX Plus (Proxy Tier)
+        |
+        +--> AEM Publish Cluster
+        |
+        +--> Legacy Web / Portal
+        |
+        +--> Backend APIs / Microservices
+
+
+DNS www.sc.com → Imperva.
+	•	Imperva forwards all traffic for www.sc.com to a single origin: the NGINX/NGINX Plus proxy.
+	•	NGINX owns all path-based routing and redirects.
+
+⸻
+
+4. Detailed Flow
+
+4.1 Example: New AEM Page with Redirect
+
+Scenario: /personalbanking/cards is moved to /personal/cards.
+
+Request flow:
+	1.	Client requests: https://www.sc.com/personalbanking/cards
+	2.	DNS: www.sc.com → Imperva.
+	3.	Imperva:
+	•	Runs WAF checks & DDoS filters.
+	•	Checks CDN cache:
+	•	If response not cached, forwards to NGINX origin (proxy.sc.internal).
+	4.	NGINX:
+	•	Matches redirect map:
+	•	/personalbanking/cards → /personal/cards (301).
+	•	Returns redirect response.
+	5.	Imperva:
+	•	Can cache this 301 (short TTL) to reduce load.
+	6.	Client follows redirect to https://www.sc.com/personal/cards (served via AEM or another backend through NGINX).
+
+No new Imperva rule needed; change is done on the proxy layer, which is in the app team’s control.
+
+⸻
+
+5. NGINX / NGINX Plus Design
+
+5.1 Deployment & HA
+	•	At least two NGINX / NGINX Plus instances in an internal DMZ.
+	•	Exposed to Imperva via an internal VIP / Load Balancer:
+	•	proxy.sc.internal:443
+	•	All backend applications reachable from this proxy tier in a secure subnet.
+
+5.2 Sample NGINX Config – Routing & Redirects
+
+Note: this focuses on the “rules moved out of Imperva” aspect.
+
+
+5.3 NGINX Plus Extras (if used)
+
+If you opt for NGINX Plus, you gain:
+	•	Dynamic reconfiguration of upstreams via API (no restart).
+	•	Key-value stores for large redirect tables (thousands of rules) without recompiling map.
+	•	Advanced health checks and active monitoring.
+	•	Better observability (per-URI metrics, status API).
+
+This is useful if you expect hundreds or thousands of redirects for sc.com.
+
+⸻
+
+6. Imperva Configuration in This Model
+
+6.1 Imperva Site for www.sc.com
+	•	Origin: proxy.sc.internal (VIP of NGINX tier).
+	•	WAF Policy: existing sc.com policy retained.
+	•	Caching:
+	•	Honor cache headers from NGINX/backend.
+	•	Allow caching of 301 responses for shorter TTL (e.g., 5–30 minutes).
+
+6.2 Rule Simplification
+
+What we remove from Imperva:
+	•	Path-based routing rules (e.g., /legacy/ → legacy origin).
+	•	Most business redirects (e.g., /old-url → /new-url).
+	•	Complex country / campaign specific rewrites.
+
+What we keep in Imperva:
+	•	Global HTTP → HTTPS redirect (if not already done by load balancer).
+	•	Basic host → origin mapping: www.sc.com → proxy origin.
+	•	Security rules: WAF signatures, IP blacklist/whitelist, DDoS settings.
+
+This significantly reduces rule explosion in Imperva for sc.com.
+
+⸻
+
+7. Change & Governance Model
+
+7.1 Before
+	•	Every redirect / rewrite required:
+	•	Imperva change ticket.
+	•	Security review.
+	•	Longer lead time.
+	•	Imperva rule base became the place where business routing logic lived.
+
+7.2 After
+	•	Imperva:
+	•	Only security team changes (WAF policies, DDoS settings).
+	•	NGINX:
+	•	Owned by application / platform team.
+	•	Redirect/routing changes can be:
+	•	Version-controlled (Git).
+	•	Included with application release pipelines.
+	•	Tested in lower environments with the same proxy setup.
+
+Result:
+Security team keeps control of perimeter; app team gets agility for URL behavior.
+
+⸻
+
+8. Migration Strategy
+	1.	Introduce NGINX in non-prod behind Imperva:
+	•	Mirror the Imperva path/routing rules in NGINX config.
+	2.	Move routing/redirect logic:
+	•	Gradually remove non-security Imperva rules once equivalent NGINX rules are in place.
+	3.	Cutover:
+	•	Update Imperva origin for www.sc.com to point to NGINX VIP.
+	4.	Decommission old Imperva site rules:
+	•	Keep only minimal host mapping and security rules.
+	5.	Standardize pattern for new apps:
+	•	Any new app under www.sc.com is onboarded via NGINX routing, not via Imperva rule changes.
+
+⸻
+
+9. Summary
+
+Because Imperva rules for sc.com are already very complex and centrally governed, pushing more app-specific routing and redirect logic into Imperva is no longer scalable.
+
+By introducing a proxy tier (NGINX / NGINX Plus) behind Imperva:
+	•	Imperva remains focused on WAF + cache + DDoS.
+	•	The proxy layer owns all URL behavior (routing, redirects, rewrites).
+	•	App teams get faster change cycles using config-as-code.
+	•	Security team retains a clean, manageable Imperva configuration for sc.com.
+
+⸻
+
+If you want, I can now merge both scenarios into one unified document:
+	1.	AEM + Imperva + NGINX + S3 (from earlier), and
+	2.	This “Imperva rule saturation → proxy tier” justification,
+
+…so you can present it as a single architecture proposal for sc.com.
+
+There are quite a few, and they’re not just “technical” – a lot are process / ownership issues. I’ll break them down so you can reuse this as a “Risks & Challenges” section.
+
+⸻
+
+1. More Moving Parts = More Complexity
+
+Challenge:
+You’re adding another hop: Client → Imperva → NGINX → AEM/Legacy/API/S3.
+	•	More components to design, deploy, monitor, patch.
+	•	More places where headers, timeouts, and TLS settings must be consistent.
+	•	Debugging becomes multi-layer:
+	•	“Is it Imperva?”
+	•	“Is it NGINX?”
+	•	“Is it AEM / backend?”
+
+Mitigation ideas:
+	•	Standardize proxy patterns (shared proxy_params, timeout/circuit-breaker defaults).
+	•	Enforce a trace ID (X-Request-ID) from Imperva → NGINX → backend and log it everywhere.
+	•	Have a documented runbook: “How to debug a 5xx for sc.com”.
+
+⸻
+
+2. Ownership & Change Management
+
+Challenge:
+Previously, everything happened in Imperva. Now you’re splitting responsibilities:
+	•	Imperva changes → Security team.
+	•	NGINX routing/redirects → App / Platform team.
+	•	AEM content and S3 assets → Content / Dev / DevOps teams.
+
+This can create:
+	•	“Who owns this redirect?” confusion.
+	•	Parallel change processes (CAB for Imperva, different flow for NGINX).
+	•	Risk of people still requesting Imperva changes out of habit.
+
+Mitigation ideas:
+	•	Write a clear RACI:
+	•	Imperva: WAF, DDoS, global HTTPS, minimal origin mapping.
+	•	NGINX: all routing, redirects, rewrites for sc.com.
+	•	Introduce a single intake for URL changes that then routes to NGINX team.
+	•	Store NGINX config in Git; treat it like code (PR review, approvals, audit trail).
+
+⸻
+
+3. Routing & Redirection Rules Explosion (Now in NGINX)
+
+You’re solving “Imperva rule bloat”… by moving those rules to a proxy.
+
+Challenges:
+	•	NGINX config can itself become huge and hard to reason about:
+	•	Thousands of redirects in map blocks.
+	•	Many location blocks for different apps / regions / products.
+	•	Risk of conflicting rules:
+	•	A location / catch-all overshadowing more specific locations.
+	•	Overlapping redirect maps and rewrite rules.
+
+Mitigation ideas:
+	•	Use separate include files per domain / application:
+	•	e.g., /etc/nginx/conf.d/sc.com/redirects.conf, aem_routes.conf.
+	•	For large redirect sets, consider:
+	•	NGINX Plus key-value store; or
+	•	Load redirects from a simple data file that CI generates.
+	•	Add automated tests that:
+	•	Hit critical URLs in a pipeline (curl/integration tests) before deploying NGINX config.
+
+⸻
+
+4. Caching & Header Coordination (Imperva vs NGINX vs AEM/S3)
+
+Now you have at least two cache layers (Imperva edge and maybe AEM Dispatcher/AEM/S3 headers).
+
+Challenges:
+	•	Wrong Cache-Control / Expires headers can create:
+	•	Stale content at Imperva even after publishing in AEM.
+	•	Redirects cached too long / too short.
+	•	Different behavior for:
+	•	HTML (short TTL or no cache).
+	•	Static assets from S3 (long TTL, versioned paths).
+	•	Cache invalidation becomes a multi-step process:
+	•	AEM/Dispatcher flush → Imperva purge → (optionally) browser.
+
+Mitigation ideas:
+	•	Document a cache policy matrix:
+“For HTML, TTL=X; for versioned static assets, TTL=Y; for 301s, TTL=Z.”
+	•	Make sure:
+	•	AEM/Dispatcher sets sane defaults.
+	•	NGINX does not override them accidentally, unless explicitly.
+	•	Automate Imperva cache invalidation in your release pipeline for static/CDN assets.
+
+⸻
+
+5. SSL/TLS & Trust Chains
+
+Challenges:
+	•	External TLS termination at Imperva.
+	•	Internal TLS from Imperva → NGINX (optional but recommended).
+	•	Maybe TLS again NGINX → backend (APIs, AEM, etc).
+
+This means:
+	•	Internal certificates must be deployed on NGINX and backends.
+	•	Imperva must trust internal CA (if you validate backend certs).
+	•	Renewal processes for multiple certs.
+
+Mitigation ideas:
+	•	Use a standardized internal PKI or ACME-based automation for internal certs.
+	•	Write a simple matrix:
+	•	Public cert = managed via Security/Imperva.
+	•	Internal certs = managed via Platform / DevOps.
+	•	Monitor certificate expiry centrally.
+
+⸻
+
+6. Performance & Latency Impact
+
+Challenges:
+	•	Extra hop (Imperva → NGINX).
+	•	If NGINX is not sized/tuned correctly:
+	•	Connection saturation.
+	•	Increased tail latency (P95 / P99).
+	•	Risk of double compression, extra buffering, or slow backend timeouts.
+
+Mitigation ideas:
+	•	Performance testing:
+	•	End-to-end load test with Imperva + NGINX + AEM.
+	•	Tunings:
+	•	Keepalive connections between Imperva ↔ NGINX and NGINX ↔ backend.
+	•	Reasonable proxy_read_timeout and connection limits to avoid resource exhaustion.
+	•	Ensure NGINX has:
+	•	Enough CPU/RAM.
+	•	Adequate ulimits (file descriptors, worker connections).
+
+⸻
+
+7. Single Points of Failure & HA
+
+Challenges:
+	•	NGINX becomes a critical choke point (if it goes down, sc.com goes down).
+	•	Misconfigured HA (one instance, no VIP, no failover) is risky.
+	•	DR region might not have a symmetrical setup.
+
+Mitigation ideas:
+	•	Always at least two NGINX instances behind an internal load balancer or VIP.
+	•	Health checks from:
+	•	Imperva to NGINX VIP.
+	•	NGINX to each backend (AEM, legacy, API).
+	•	DR:
+	•	Plan for a second NGINX cluster and AEM/legacy presence in DR environment.
+	•	Pre-configured Imperva DR origin that can be activated via routing change.
+
+⸻
+
+8. Logging, Monitoring & Troubleshooting
+
+Multiple layers = multiple log sources.
+
+Challenges:
+	•	Correlating logs between:
+	•	Imperva → NGINX → AEM → APIs.
+	•	Potentially different formats, timezones, and fields:
+	•	Harder to reconstruct a user’s journey.
+
+Mitigation ideas:
+	•	Standardize on a correlation ID:
+	•	Imperva injects X-Request-ID.
+	•	NGINX logs it in access.log.
+	•	AEM & backend frameworks also log it.
+	•	Centralize logs into:
+	•	Splunk / ELK / Datadog / SIEM.
+	•	Build dashboards for:
+	•	4xx/5xx by path.
+	•	Cache HIT/MISS rates at Imperva.
+	•	Latency breakdown (Imperva → NGINX → backend).
+
+⸻
+
+9. Security Gaps or Overlaps
+
+Challenges:
+	•	Risk of assuming “Imperva will block everything” and forgetting about:
+	•	Internal-only paths exposed by mistake.
+	•	Direct access to NGINX or backends bypassing Imperva (misconfigured firewall).
+	•	Overlap between NGINX and Imperva security controls:
+	•	Duplicate IP blocking or rate limiting in both places.
+
+Mitigation ideas:
+	•	Network controls:
+	•	Only Imperva IPs can reach NGINX externally.
+	•	Only NGINX can reach AEM/legacy APIs on those ports.
+	•	Clear design:
+	•	WAF rules: only on Imperva.
+	•	Basic HTTP hardening & header security: on NGINX (e.g., X-Frame-Options, CSP).
+	•	Periodic penetration tests that:
+	•	Try accessing NGINX or AEM directly.
+	•	Validate WAF + network controls.
+
+⸻
+
+10. Migration / Coexistence with Old Rules
+
+Challenges:
+	•	During migration:
+	•	Some redirects may still live in Imperva.
+	•	New ones in NGINX → potential conflicts or odd behavior.
+	•	Risk of double redirect loops if both layers have rules for the same path.
+
+Mitigation ideas:
+	•	Plan migration in phases:
+	1.	Inventory all Imperva routing/redirect rules.
+	2.	Implement equivalent rules in NGINX.
+	3.	Switch Imperva to a simple “send everything to NGINX” model for www.sc.com.
+	4.	Clean up Imperva rules after validation.
+	•	Have a test matrix for important URLs to validate behavior pre/post cutover.
+
+⸻
+
+11. Bank-Specific Governance / Compliance
+
+Especially for a bank like sc.com:
+
+Challenges:
+	•	Multiple regulators and internal audit checks:
+	•	Need clear traceability of changes.
+	•	Different teams across geographies:
+	•	Region-specific URLs and rules (e.g., sc.com/in, sc.com/hk etc.).
+	•	Need to ensure:
+	•	Data residency rules aren’t violated (where AEM/NGINX/Imperva/S3 are hosted).
+
+Mitigation ideas:
+	•	Treat NGINX config as regulated code:
+	•	PR approvals, peer review, change records.
+	•	Use config templates for region-specific sites.
+	•	Document data flow and hosting locations clearly for audit.
+
+⸻
+
+If you’d like, I can turn this into a formal “Risks & Mitigations” section you can append directly to your technical design document for sc.com, with a severity (High/Med/Low) and owner for each risk.
+
+Nice, this is exactly the messy real-world part everyone underestimates 😄
+Let’s design it so WordPress and AEM can coexist cleanly while you’re mid-migration.
+
+I’ll assume this stack:
+	•	Imperva (WAF + CDN) → NGINX proxy → WordPress + AEM
+	•	Old rules currently point to WordPress
+	•	Only some pages are migrated to AEM (not full site yet)
+
+⸻
+
+1. Goal in this Mixed WP + AEM Phase
+
+You need redirection/routing that:
+	1.	Still serves non-migrated URLs from WordPress
+	2.	Serves migrated URLs from AEM (even if the URL is the same)
+	3.	For changed URLs, 301 redirect old WordPress URL → new AEM URL
+	4.	Avoids dumping a ton of new URL logic into Imperva (keep that in NGINX).
+
+So the source of truth for “where this URL goes” must move from Imperva to the proxy (NGINX).
+
+⸻
+
+2. Conceptual Design
+
+2.1 URL Categories
+
+Every old WordPress URL will fall into one of these:
+	1.	Unchanged URL, but now served from AEM
+	•	/personal/cards (was WP, same URL now in AEM)
+	2.	Changed URL, migrated to AEM
+	•	Old: /personalbanking/cards (WordPress)
+	•	New: /personal/cards (AEM)
+→ needs 301.
+	3.	Not migrated (still on WordPress)
+	•	/blog/2022/old-article/ stays on WP for now.
+	4.	Retired
+	•	Old URL should 301 to a replacement or 410/404.
+
+You want a migration catalog like:
+
+Old URL
+New URL / Target
+Target app
+Action
+/personalbanking/cards
+/personal/cards
+AEM
+301
+/personal/cards
+/personal/cards
+AEM
+direct
+/blog/2022/old-article/
+(unchanged)
+WP
+direct
+/product/legacy/feature-x
+/product/new/feature-x
+AEM
+301
+
+
+3. Where Logic Lives
+
+Imperva
+	•	Keeps:
+	•	WAF, DDoS, TLS
+	•	Basic origin mapping (www.sc.com → NGINX)
+	•	NO per-URL migration logic (except temporary during cutover)
+
+NGINX / NGINX Plus
+	•	Becomes routing brain:
+	•	Knows, per URL, whether to:
+	•	Issue a 301 to an AEM URL, or
+	•	Serve directly from AEM, or
+	•	Serve from WordPress.
+
+⸻
+
+4. Implementation Pattern in NGINX
+
+4.1 Simple Pattern: Map for Redirects + Map for Target App
+
+For small/medium number of URLs, you can manage everything in flat NGINX maps.
+
+How this behaves:
+	•	/personalbanking/cards
+→ hits redirect map → 301 /personal/cards (AEM URL, permanent for SEO).
+	•	/personal/cards
+→ no redirect entry → map returns target_app = aem → proxied to AEM.
+	•	/blog/2022/old-article/
+→ no redirect entry, no app override → target_app = wp (default) → WordPress.
+
+You can split maps into separate include files for maintainability:
+	•	maps_redirects_sc.com.conf
+	•	maps_target_app_sc.com.conf
+
+⸻
+
+4.2 Bigger Sites: External Data or NGINX Plus
+
+If you have hundreds or thousands of migrated pages:
+	•	Use NGINX Plus key-value store:
+	•	Populate from a JSON/CSV via API.
+	•	No reload needed for every migration change.
+	•	Or generate static map files from your migration catalog automatically in CI/CD.
+
+⸻
+
+5. Handling Old Imperva Rules Pointing to WordPress
+
+Right now you probably have Imperva rules like:
+	•	/personalbanking/cards → origin: WordPress
+	•	Some rewrites/redirects baked into Imperva.
+
+The migration approach:
+	1.	Freeze Imperva app logic for www.sc.com
+	•	Stop adding new per-URL rules.
+	2.	Mirror necessary redirects/routing into NGINX
+	•	For pages now on AEM, add them to the redirect map / target_app map.
+	3.	Change Imperva origin
+	•	www.sc.com → NGINX VIP, not directly to WordPress.
+	4.	Gradually remove/disable old Imperva WordPress routing rules
+	•	Once tested, keep Imperva rules minimal.
+
+From outside, www.sc.com still “just works”, but inside:
+	•	NGINX decides AEM vs WordPress + redirects based on up-to-date migration map.
+
+⸻
+
+6. Edge Cases & Gotchas
+
+6.1 Same URL Exists in Both WP and AEM
+
+E.g. /personal/cards exists on both platforms during transition.
+	•	Decide who is the canonical:
+	•	If AEM is the future: target_app → aem.
+	•	WP version should be hidden (only accessible internally).
+	•	Optional: protect WP with basic auth or IP restrictions during migration.
+
+6.2 SEO & Analytics
+	•	Always use 301 (permanent) when moving from WP → AEM for migrated URLs.
+	•	Keep tracking IDs working:
+	•	Ensure JS tracking still loads on AEM pages.
+	•	Update any hard-coded URLs in WordPress templates to point to the new path.
+
+6.3 Content Editors During Migration
+	•	Decide editing freeze:
+	•	For URLs being migrated to AEM, stop editing them in WordPress once migration starts.
+	•	Or build sync/post-migration checklist:
+	•	Check that AEM content matches final WP version before mapping the URL.
+
+⸻
+
+7. How to Explain This in Your Doc / Meeting
+
+You can describe it like this:
+
+“During the transition from WordPress to AEM, NGINX will act as the routing brain.
+Imperva will send all www.sc.com traffic to NGINX.
+NGINX uses a migration catalog to:
+	•	301 old WordPress URLs to new AEM URLs,
+	•	Serve migrated URLs directly from AEM, and
+	•	Continue serving all non-migrated URLs from WordPress.
+This allows us to migrate page-by-page without breaking existing URLs or cluttering Imperva’s rule base.”
+
+⸻
+
+If you share a couple of real example URLs (old WP path → new AEM path), I can write a ready-to-paste NGINX map + location config snippet using your exact patterns (e.g., /sg/en/, /in/en/, etc. for sc.com).
+
+
+
+
+
+
+
+
