@@ -1,0 +1,168 @@
+Phase	
+Task Description
+Action Owner
+Estimated Days
+Discovery & Analysis
+Kickoff meeting, requirement finalization, team alignment
+All Teams	2
+Discovery & Analysis
+Full export of Imperva rule sets (including chained rules, geo rules, conditional flows)
+Application Team
+4
+Discovery & Analysis
+Complex rule dependency analysis & redirection matrix creation
+Application Team
+5
+Discovery & Analysis
+WordPress path mapping incl. plugin-based redirects & SEO rules
+Application Team
+4
+Discovery & Analysis
+AEM dispatcher rules assessment, regex pattern extraction, sling-mapping review
+Application Team
+5
+Discovery & Analysis
+Finalize architecture (Imperva → NGINX LB → Proxy → WP/AEM)
+Application Team
+3
+Infra Procurement
+Initiate Azure VM procurement + storage approval
+Platform Team
+5
+Infra Procurement
+Provision VM, attach volumes, optimize sizing for NGINX + Podman
+Platform Team
+4
+Infra Procurement
+Set up RBAC, SSH access, hardening baseline
+Platform Team
+3
+Podman Setup
+Install Podman, configure rootless containers
+Platform Team
+3
+Podman Setup
+Build hardened NGINX LB image + proxy image
+Platform Team
+5
+Podman Setup
+Integrate container security scanning (Trivy/Qualys)
+Platform Team
+2
+Podman Setup
+Internal container registry configuration & push process
+Platform Team
+3
+Networking
+Firewall updates, whitelisting source/destination rules
+Network Team
+5
+Networking
+DNS mapping, CNAME & A-record alignment
+Network Team
+3
+Networking
+SSL certificate procurement, installation & renewal config
+Network Team
+4
+NGINX LB	
+Deploy LB container, configure upstreams, caching, keepalive tuning
+Network Team
+4
+NGINX LB	
+Configure failover, active health checks, circuit breakers
+Network Team
+4
+NGINX LB	
+Set up logging, metrics export to Azure Monitor
+Network Team
+3
+NGINX Proxy
+Setup proxy container
+Network Team
+3
+NGINX Proxy
+Implement 301/302 complex redirects (regex + nested conditions)
+Network Team
+6
+NGINX Proxy
+Rewrite rules for WordPress categories, blogs, archives, multilingual URLs
+Application Team
+5
+NGINX Proxy
+Rewrite rules for AEM: selectors, extensions, infinite redirect prevention
+Application Team
+7
+NGINX Proxy
+Legacy 10+ year old URL migration handling
+Application Team
+6
+NGINX Proxy
+Test 500+ complex rule scenarios + fallback rules
+Application Team
+7
+Manifest Setup
+Create WP routing manifest with rule grouping
+Application Team
+4
+Manifest Setup
+Create AEM routing manifest including template-level mappings
+Application Team
+5
+Manifest Setup
+CI/CD integration, manifest versioning & rollback strategy
+Application Team
+3
+Testing	
+Functional testing for WP + AEM redirect flows
+Application Team
+7
+Testing	
+Automated redirect testing for 1000+ URLs
+Application Team
+6
+Testing	
+SEO test: canonical URLs, sitemap, AMP rules
+Application Team
+4
+Testing	
+Load test NGINX LB + proxy (3 cycles)
+Platform Team
+5
+Testing	
+Security: header enforcement, caching, SSL/TLS policies
+Security Team
+5
+UAT	
+Prepare full UAT cycle
+Application Team
+3
+UAT	
+Conduct UAT for WP & AEM
+Business + App Team
+10
+UAT	
+Fix defects and retest
+Application + Network Team
+5
+Production Rollout
+Create cutover strategy + rollback plan
+All Teams	3
+Production Rollout
+Production deployment
+All Teams	2
+Production Rollout
+Smoke tests after deployment
+Application Team
+2
+Post-Go-Live
+Monitoring + defect fixes (Hypercare 2 weeks)
+All Teams	10
+Post-Go-Live
+Documentation & handover
+Application Team
+4
+ 	 	 	 
+TOTAL DAYS (No Buffer)	 	 	183
+BUFFER (15%)	 	 	28
+TOTAL WITH BUFFER	 	 	211
