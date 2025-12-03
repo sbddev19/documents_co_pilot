@@ -1,0 +1,523 @@
+Here’s a more detailed “intention statement” you can reuse in your solution doc / PPT, broken into clear angles (business, architecture, operations, etc.).
+
+⸻
+
+1. Strategic / Business Intention
+
+Intention:
+Create a stable, scalable redirection platform that can keep up with continuous AEM and WordPress page releases without constantly reworking Imperva or application code.
+
+More concretely:
+	•	Enable frequent site changes (new pages, new sections, restructuring) without:
+	•	Hitting Imperva rule limits
+	•	Slowing down releases with WAF change requests
+	•	Give digital / marketing teams a predictable way to say:
+“Here is a list of old URLs; after this release, they must go to these new SEO URLs.”
+	•	Ensure SEO and business redirects are implemented quickly, safely, and consistently for every release.
+
+⸻
+
+2. Architectural Intention
+
+Intention:
+Decouple security from URL/routing logic and move all heavy redirect behavior into a dedicated, controllable NGINX layer.
+	•	Imperva = Security layer only
+	•	Focus on WAF policies, threat protection, rate limiting.
+	•	No longer bloated by thousands of SEO/legacy redirects.
+	•	DMZ1 NGINX = Edge routing + global normalization
+	•	One place for canonical rules: http → https, non-www → www, default domain redirects, etc.
+	•	DMZ2 NGINX = Application-aware redirect engine
+	•	AEM-specific rules: old /content/site/... paths, locale migrations, content restructuring.
+	•	WordPress-specific rules: old query-string-based blog URLs, category changes, permalink changes.
+	•	AEM and WordPress = clean content origin
+	•	They render pages; they don’t carry the burden of every redirect that marketing and SEO teams dream up.
+
+Overall: Routing & redirects are now first-class architecture components, not an accidental mix spread across Imperva, AEM, and plugins.
+
+⸻
+
+3. Operational Intention (How Teams Work)
+
+Intention:
+Turn redirect management into a controlled, automated, CI/CD-driven process, instead of manual rule manipulation.
+	•	Redirects are stored as config files (NGINX map, rewrite, include files).
+	•	These files live in Git:
+	•	Changes are requested via pull requests.
+	•	Reviewed by platform/architects.
+	•	Versioned with full history and rollback.
+	•	Deployment is done through CI/CD pipelines:
+	•	When redirected rules change, pipelines push updated NGINX configs to DMZ1/DMZ2.
+	•	No manual editing in Imperva UI or logging into servers to tweak configs.
+	•	Per-release redirect sets:
+	•	Each AEM/WordPress release can bring its own redirects_release_YYMMDD.conf file.
+	•	Old files can be archived or cleaned up systematically.
+
+This allows many new rules per release without creating chaos.
+
+⸻
+
+4. Intention Around Future Redirect Volume (Rule Explosion)
+
+Intention:
+Design the system from the start to handle large and growing redirect volumes elegantly.
+	•	Use NGINX features that scale with rule count:
+	•	map tables for thousands of old → new mappings.
+	•	Modular includes per site/locale/campaign.
+	•	Support simple automation:
+	•	Marketing / content teams prepare CSV of redirects: old_url, new_url, status_code.
+	•	Script generates NGINX-compatible map file from CSV.
+	•	Make it trivial to add hundreds or thousands of new rules:
+	•	When restructuring the site.
+	•	When migrating from old CMS / legacy domains.
+	•	When rolling out new language sites or brands.
+
+The intention here is: we expect redirect growth and are building for it upfront, instead of reacting later when Imperva breaks.
+
+⸻
+
+5. SEO & User Experience Intention
+
+Intention:
+Protect and improve SEO ranking and user experience during continuous site changes.
+	•	Ensure that every retired URL:
+	•	Has a correct 301/302 destination.
+	•	Is applied consistently across all environments and domains.
+	•	Prevent redirect chains and loops:
+	•	Central, visible rules reduce accidental hop chains (e.g., A → B → C).
+	•	NGINX redirects can be tested offline with URL lists.
+	•	Make domain and path canonicalization predictable:
+	•	Same behavior for AEM and WordPress (same standards at DMZ1/DMZ2).
+	•	Result:
+	•	Fewer broken links.
+	•	Cleaner crawl behavior for search engines.
+	•	Users land on the right page even when URLs change often.
+
+⸻
+
+6. Security & Risk Intention
+
+Intention:
+Lower risk by simplifying Imperva and isolating responsibilities.
+	•	Imperva no longer hosts:
+	•	Huge, complex business rulesets.
+	•	Redirect patterns that are unrelated to security.
+	•	Security team focuses on:
+	•	Threat models, WAF tuning, and compliance.
+	•	Application/platform teams own:
+	•	URL behavior and redirects via NGINX.
+	•	Fewer “all-in-one” changes:
+	•	WAF updates don’t accidentally break redirects.
+	•	Redirect updates don’t accidentally weaken security.
+
+This reduces the chance that a last-minute redirect change in Imperva causes an outage.
+
+⸻
+
+7. Testing & Quality Intention
+
+Intention:
+Make redirect behavior testable and auditable as part of every release.
+	•	Redirect test cases can be:
+	•	Stored alongside redirect configs.
+	•	Automatically verified in lower environments.
+	•	Pre-release test:
+	•	For each URL in a CSV test list, curl the staging NGINX and confirm correct final URL and status code.
+	•	After go-live:
+	•	Monitor logs in NGINX to detect 404s and unexpected patterns.
+	•	Feed back into new redirect rules in the next release.
+
+The intention is: redirects move from “tribal knowledge in WAF + CMS” to “tested, repeatable artifacts in the release pipeline.”
+
+⸻
+
+8. One Extended Intention Statement You Can Paste As-Is
+
+The intention of introducing NGINX in DMZ1 and DMZ2 is to remove the heavy, fast-changing redirect and rewrite logic from Imperva, AEM, and WordPress, and centralize it into a scalable, CI/CD-driven redirect platform. This architecture decouples security from routing, allows thousands of new redirect rules to be added for every future AEM/WordPress page release via version-controlled configuration files rather than manual WAF changes, protects SEO and user experience during continuous site evolution, reduces operational risk by giving security and platform teams clear ownership boundaries, and ensures that URL behavior is testable, predictable, and future-proof as redirect volumes grow over time.
+
+
+
+
+Internet
+  ↓
+Imperva WAF (security only)
+  ↓
+DMZ1: NGINX LB
+   • Global redirects (http→https, non-www→www, etc.)
+   • Host/path routing to apps (AEM vs WordPress)
+  ↓
+DMZ2: NGINX Reverse Proxy + Rewrite
+   • AEM-specific redirects & rewrites
+   • WordPress-specific redirects & rewrites
+  ↓
+AEM / WordPress origin servers
+
+Here’s a tight summary you can almost drop straight into a solution deck.
+
+⸻
+
+1. NGINX Approach – Short Summary
+
+Goal:
+Move all heavy redirect/URL rewrite logic out of Imperva and AEM/WordPress into a dedicated, scalable NGINX layer.
+
+Key points:
+	•	Imperva: Kept clean – mostly WAF/security policies, almost no redirect rules.
+	•	DMZ1 NGINX: Handles simple global redirects + load balancing and routing.
+	•	DMZ2 NGINX: Handles complex, app-specific redirect rules for AEM and WordPress using NGINX maps and include files.
+	•	All redirect configs are file-based and managed via Git + CI/CD, not UI clicks.
+
+⸻
+
+2. What Problems This Fixes – Especially for Many Future Rules
+
+✅ 2.1 “Rule Explosion” Problem in Imperva
+
+Issue today:
+	•	Imperva has a huge number of redirect rules (SEO, legacy paths, campaigns, locale mapping).
+	•	Hard to maintain, hard to search, risky to change, and can hit platform limits.
+
+NGINX fix:
+	•	Move all this dynamic redirect logic to NGINX in DMZ1/DMZ2.
+	•	Use:
+	•	map blocks for large “old URL → new URL” lists.
+	•	Split configs into multiple files by site/locale/campaign.
+	•	Imperva becomes lean and stable (security only).
+
+⸻
+
+✅ 2.2 Future Page Releases Need Many New Redirects
+
+Issue today:
+	•	Every new AEM/WordPress release often needs hundreds of new redirect rules.
+	•	Adding them in Imperva or directly in AEM/WordPress is:
+	•	Slow (change requests, manual UI updates).
+	•	Error-prone.
+	•	Hard to version, test, and rollback.
+
+NGINX fix:
+	•	Redirects live in config files, not in WAF UI or app code.
+	•	For each new release, you can:
+	•	Get a CSV / Excel of “old URL → new URL”.
+	•	Convert it to an NGINX map file via script.
+	•	Commit to Git → CI/CD deploys to NGINX.
+	•	Benefits:
+	•	Fast onboarding of many new redirect rules.
+	•	Repeatable process per release (no manual clicking).
+	•	Easy rollback by reverting to previous config.
+	•	Different files for each release or campaign → can be cleaned up later.
+
+This directly supports continuous page/content releases where redirect sets keep growing.
+
+⸻
+
+✅ 2.3 Maintainability & Ownership
+
+Issue today:
+	•	Mix of redirects in:
+	•	Imperva
+	•	AEM dispatcher/app code
+	•	WordPress plugins / .htaccess
+	•	No single “source of truth” → high risk of conflicts and redirect loops.
+
+NGINX fix:
+	•	One central redirect layer for AEM and WordPress (DMZ1/DMZ2 NGINX).
+	•	Clear ownership:
+	•	Security team → Imperva (WAF).
+	•	Platform/Infra team → NGINX configs.
+	•	Digital/Business teams → provide redirect requirements (files), not rules.
+	•	All NGINX rules are visible, searchable, and reviewable in Git.
+
+⸻
+
+✅ 2.4 Performance & Stability
+
+Issue today:
+	•	AEM/WordPress may still handle some redirects themselves, wasting app resources.
+	•	Imperva doing complex logic can add latency and complexity.
+
+NGINX fix:
+	•	Most redirects happen before reaching the app:
+	•	Simple global rules in DMZ1.
+	•	Complex legacy/SEO rules in DMZ2.
+	•	AEM and WordPress mostly see clean, final URLs.
+	•	Less load and less redirect-chaining → better performance and user experience.
+
+⸻
+
+✅ 2.5 Testing & Quality for Every New Release
+
+Issue today:
+	•	Hard to test that all legacy URLs redirect correctly after a new release.
+	•	Changes in Imperva + app can be inconsistent.
+
+NGINX fix:
+	•	For every set of new redirect rules, you can:
+	•	Maintain a test list (thousands of URLs).
+	•	Run automated tests (curl or scripts) against staging NGINX.
+	•	Verify status codes and final destinations before go-live.
+	•	Makes new rule deployments predictable and testable.
+
+⸻
+
+3. One-Sentence “Intention” You Can Use
+
+Intention: Move all heavy and fast-changing redirect logic from Imperva and the applications into a two-layer NGINX architecture (LB in DMZ1 + app-aware reverse proxies in DMZ2), so that we can safely handle a continuously growing number of redirects for future AEM and WordPress page releases with better scalability, performance, and maintainability.
+
+If you want, I can now help you turn this into a slide with: current vs target architecture + a “before/after” view focused on redirect lifecycle for new page releases.
+
+Internet
+   ↓
+[DMZ1]
+  WAF (Imperva)
+  NGINX LB + global routing
+   ↓
+[DMZ2]
+  NGINX Reverse Proxy (AEM)
+  NGINX Reverse Proxy (WordPress)
+   ↓
+Internal App Network
+  AEM Dispatcher/Publish
+  WordPress Servers
+
+In your solution context, DMZ1 and DMZ2 refer to two different network security zones (layers) commonly used in enterprise architectures for isolating and protecting web applications.
+
+Here is a simple, clear explanation 👇
+
+⸻
+
+✔ What Are DMZ1 and DMZ2?
+
+DMZ = Demilitarized Zone
+
+A DMZ is a network segment isolated from the internal network, used to host systems that must be exposed to the internet in a controlled and secure way.
+
+Many enterprises use multiple DMZ layers for additional segmentation.
+
+⸻
+
+🔐 DMZ1 — The Outer Security Layer (Internet-Facing DMZ)
+
+Purpose
+
+This is the layer closest to the internet.
+It hosts components that directly interact with external users and are designed to withstand attacks.
+
+Common Components in DMZ1
+	•	WAF (e.g., Imperva, Akamai, Cloudflare)
+	•	Load Balancers (F5, NGINX LB, HAProxy)
+	•	API gateways
+	•	Edge caching/proxy layers
+
+Characteristics
+	•	Exposed to the public internet
+	•	Hardened configurations
+	•	Limited access to internal systems
+	•	Only ports like 80/443 opened inbound
+	•	Serves as the first entry point after the WAF
+
+In your context:
+
+DMZ1 hosts the NGINX Load Balancer / Front Proxy that handles global redirects and routing.
+
+⸻
+
+🔐 DMZ2 — The Inner Application DMZ (Protected but Not Fully Internal)
+
+Purpose
+
+More secure than DMZ1, yet still isolated from the internal network.
+It hosts application-facing reverse proxies and middleware, not directly exposed to public users.
+
+Common Components in DMZ2
+	•	Reverse Proxies (NGINX, Apache)
+	•	AEM Dispatcher servers
+	•	WordPress NGINX/Apache servers
+	•	App routing logic
+	•	Business redirects and rewrite rules
+
+Characteristics
+	•	Receives traffic only from DMZ1, not directly from the internet
+	•	Enforces deeper routing, rewrite, and app integration logic
+	•	Provides an additional security layer before hitting app servers
+	•	Often has app servers behind it (AEM publish, WordPress PHP-FPM, etc.)
+
+In your context:
+
+DMZ2 hosts the NGINX Reverse Proxy + Rewrite servers for AEM and WordPress.
+
+⸻
+
+🧊 Why Two DMZ Layers?
+
+Using two DMZ layers is a best-practice design to:
+
+✔ Increase security
+
+DMZ1 and DMZ2 prevent compromised edge systems from directly accessing application servers.
+
+✔ Separate responsibilities
+	•	DMZ1 = Internet-facing routing
+	•	DMZ2 = Application-specific rewrites, reverse proxy, caching
+
+✔ Improve performance
+
+Redirects processed in the right layer reduces load on deeper systems.
+
+✔ Improve scalability & maintenance
+
+Different teams can own each layer (Security, Network, Web Platforms).
+
+
+•	These files are deployed via CI/CD → no manual clicking in Imperva UI.
+	•	Changes are version-controlled (Git), with PR reviews, rollback capability, and automated tests.
+
+3.2 Clear Separation of Concerns
+	•	Imperva: Security only → simpler, more robust WAF, fewer false positives.
+	•	DMZ1 NGINX: Global routing & simple redirects common to all systems.
+	•	DMZ2 NGINX: Complex per-application rewrite logic.
+	•	AEM & WordPress: Focus on content rendering and business features, not URL plumbing.
+
+This separation makes it easier for different teams to own their part:
+	•	Security team owns Imperva.
+	•	Infra/Platform team owns NGINX configs.
+	•	Digital / Web team provides redirect requirements (often via CSV/config), not Imperva rules.
+
+3.3 Performance
+	•	Redirects executed as early as possible:
+	•	Many handled at DMZ1 without hitting DMZ2 or the origin.
+	•	Complex ones handled in DMZ2 without hitting the application layer.
+	•	Reduced load on AEM dispatcher and WordPress: fewer 301/302 serum at app level → more capacity for real traffic.
+
+3.4 Operational Flexibility
+	•	You can AB-test redirect changes by spinning up a new NGINX reverse proxy instance with alternative configs and routing a portion of traffic.
+	•	Blue/green deployments: swap NGINX configs for rollouts and rollbacks safely.
+	•	Emergency fixes: change NGINX rule and reload → faster than going through Imperva change process.
+
+⸻
+
+4. Migration Strategy (High-Level)
+
+Intention: move from Imperva-based redirects to NGINX without breaking production.
+	1.	Discovery & Categorization
+	•	Export all current Imperva redirect/URL rules + AEM-based redirects + WordPress redirect plugins (.htaccess, etc.).
+	•	Categorize rules into:
+	•	Global canonicalization (goes to DMZ1 NGINX).
+	•	AEM legacy/SEO (goes to AEM reverse proxy in DMZ2).
+	•	WordPress legacy/SEO (goes to WordPress reverse proxy in DMZ2).
+	•	Truly security-related (stay in Imperva or security config).
+	2.	Build NGINX Rule Sets in Staging
+	•	Implement & optimize rules using map tables, rewrite, return 301, and includes.
+	•	Use automated tests:
+	•	Input/expected output URL lists.
+	•	Compare NGINX responses against current production behaviour.
+	3.	Shadow Mode (Optional but Recommended)
+	•	Mirror traffic in lower environment and log what NGINX would do.
+	•	Compare Imperva/AEM/WordPress actual redirects vs NGINX’s intended behaviour.
+	4.	Phased Cutover
+	•	Phase 1: Move global canonical redirects from Imperva → DMZ1 NGINX.
+	•	Phase 2: Move AEM app-specific redirects into DMZ2 AEM NGINX; disable corresponding ones in AEM & Imperva.
+	•	Phase 3: Move WordPress redirects similarly.
+	•	At each phase, monitor:
+	•	4xx/5xx error rates.
+	•	3xx patterns.
+	•	SEO metrics (crawl errors, index coverage).
+	5.	Decommission Legacy Rules
+	•	Once stable, remove redirect logic from Imperva, AEM dispatcher configs, and WordPress plugins (to avoid conflicts and loops).
+
+⸻
+
+5. Summary in One Line (For Your Slide / Document)
+
+Intention: Offload massive AEM and WordPress redirect logic from Imperva and the applications into a two-tier NGINX architecture (LB in DMZ1 + reverse proxy/rewrite in DMZ2), to improve scalability, maintainability, performance, and security isolation.
+
+If you’d like, I can next:
+	•	Turn this into a solution design document (with diagrams + pros/cons), or
+	•	Draft sample NGINX config templates for AEM and WordPress that match a typical enterprise setup
+
+Improvement:
+	•	Each app has its own focused, scalable rewrite layer.
+	•	Rules are easier to manage in NGINX (files can be version-controlled, templated, and tested).
+	•	AEM and WordPress origin servers get mostly normalized, “clean” requests → less custom logic in app code.
+
+⸻
+
+3. How This Specifically Improves on “Imperva Cannot Manage Huge Rule Sets”
+
+3.1 Scalability & Maintainability
+	•	NGINX handles large rule sets efficiently using:
+	•	map blocks
+	•	include-d conf files per domain/site/locale
+	•	Generated configs (e.g., from CSV, DB dumps, or API)
+
+Pain points:
+	1.	Imperva is overloaded with URL logic
+	•	Huge number of redirect/rewrites (SEO, legacy URLs, marketing campaigns, locale handling).
+	•	Imperva UI & rule syntax are not ideal for massive, frequently changing rule sets.
+	2.	Mixed responsibilities (Security + Routing)
+	•	WAF should focus on security: OWASP rules, bot protection, DDoS mitigation.
+	•	Business / SEO redirects change constantly and don’t belong in a security layer.
+	3.	Hard to test & maintain
+	•	Redirects in Imperva + some in AEM/WordPress → no single “source of truth.”
+	•	Testing changes is slow and error-prone, especially across environments.
+	4.	Performance impact on AEM & WordPress
+	•	AEM/WordPress handling redirect logic at the app level consumes app resources.
+	•	Simple canonicalization (http→https, non-www→www, trailing slash rules, old content paths) should not hit the app.
+
+⸻
+
+2. Target Architecture – Move Redirects to NGINX in DMZ1 & DMZ2
+
+Internet
+  ↓
+Imperva WAF (Security only: no/very few redirects)
+  ↓
+DMZ1: NGINX Load Balancer (LB / Front Proxy)
+  ↓
+DMZ2: NGINX Reverse Proxy + Rewrite Tier
+  ↓
+AEM Authors/Publishers + Dispatcher      WordPress Web Tier
+
+2.1 Imperva (Front WAF)
+Intention: Security-only layer, minimal logic.
+	•	Responsibilities:
+	•	L7 security (OWASP, IP reputation, rate limiting, bot mitigation, geo-blocking).
+	•	TLS termination if required (or pass-through to NGINX, depending on policy).
+	•	No complex redirects; maybe only emergency or very global ones (e.g., entire site maintenance redirect).
+
+Improvement:
+	•	Imperva configuration becomes very lean, easier to manage and less likely to hit rule limits.
+	•	Faster WAF updates and policy deployments.
+
+⸻
+
+2.2 DMZ1: NGINX Load Balancer (LB) – “Edge Routing & Simple Redirects”
+Intention: Central entry point for host/path routing and simple, global normalization.
+
+Responsibilities:
+	•	SSL termination (if not done at Imperva).
+	•	Host-based routing:
+	•	www.brand.com → AEM reverse proxy in DMZ2
+	•	blog.brand.com → WordPress reverse proxy in DMZ2
+	•	careers.brand.com → AEM/other app, etc.
+	•	Global canonical redirects:
+	•	http:// → https://
+	•	brand.com → www.brand.com
+	•	Optionally: www.brand.com/index.html → https://www.brand.com/
+	•	High-level “catch-all” for invalid domains to a generic landing page or 404.
+
+2.3 DMZ2: NGINX Reverse Proxy + Rewrite Tier (per app: AEM & WordPress)
+Intention: Application-aware rewrite/redirect engine, scalable for huge rule sets.
+
+Here you have separate NGINX “reverse proxies” for each application:
+	•	nginx-aem-rp (AEM-specific)
+	•	nginx-wp-rp (WordPress-specific)
+
+AEM Reverse Proxy (DMZ2) – Responsibilities:
+	•	Complex legacy URL rewrites for AEM:
+	•	Old /content/site/en/home.html → /
+	•	/products/product123.html → /products/product-123/
+	•	Locale segments: /en/home/ → /home/ and so on.
+	•	SEO-friendly URL transformations (hide .html, enforce trailing slash, etc.).
+	•	Path-based routing to AEM dispatcher/publishers.
+
+
