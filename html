@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEM Release Tracker and Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #172B4D;
+      margin: 24px;
+      background: #FFFFFF;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      margin-top: 0;
+      color: #5E6C84;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+    th, td {
+      border: 1px solid #DFE1E6;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #F4F5F7;
+    }
+    .cards {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 12px;
+    }
+    .cards td {
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid #DFE1E6;
+      width: 20%;
+    }
+    .card-label {
+      font-size: 12px;
+      color: #42526E;
+    }
+    .card-value {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+    .blue { background: #DEEBFF; border-color: #B3D4FF !important; }
+    .green { background: #E3FCEF; border-color: #ABF5D1 !important; }
+    .yellow { background: #FFF0B3; border-color: #FFE380 !important; }
+    .red { background: #FFEBE6; border-color: #FFBDAD !important; }
+    .grey { background: #F4F5F7; border-color: #DFE1E6 !important; }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .pill-progress { background: #FFFAE6; color: #7A5D00; }
+    .pill-planned { background: #DEEBFF; color: #0747A6; }
+    .pill-awaiting { background: #FFFAE6; color: #7A5D00; }
+    .section-title {
+      border-bottom: 2px solid #DFE1E6;
+      padding-bottom: 6px;
+      margin-top: 28px;
+    }
+    .small {
+      color: #5E6C84;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>AEM Country Release Dashboard</h1>
+  <p class="subtitle">
+    Release tracking for multi-country rollout with batch-based deployment, approval, content confirmation, and go-live readiness.
+  </p>
+
+  <table class="cards">
+    <tr>
+      <td class="blue">
+        <div class="card-label">Release Version</div>
+        <div class="card-value">R-2026.04</div>
+      </td>
+      <td class="green">
+        <div class="card-label">Total Countries</div>
+        <div class="card-value">5</div>
+      </td>
+      <td class="yellow">
+        <div class="card-label">Current Batch</div>
+        <div class="card-value">Batch 1</div>
+      </td>
+      <td class="red">
+        <div class="card-label">Pending Bank Sign-off</div>
+        <div class="card-value">2</div>
+      </td>
+      <td class="grey">
+        <div class="card-label">Last Updated</div>
+        <div class="card-value">{{Update Date}}</div>
+      </td>
+    </tr>
+  </table>
+
+  <h2 class="section-title">Batch Rollout Plan</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Batch</th>
+        <th>Countries</th>
+        <th>Planned Deployment Week</th>
+        <th>Imperva Request Raised</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Batch 1</td>
+        <td>SG, HK</td>
+        <td>{{Week 1}}</td>
+        <td>Yes</td>
+        <td><span class="pill pill-progress">In Progress</span></td>
+      </tr>
+      <tr>
+        <td>Batch 2</td>
+        <td>TW, IN, AE</td>
+        <td>{{Week 2}}</td>
+        <td>Planned</td>
+        <td><span class="pill pill-planned">Planned</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">Country Release Tracking Dashboard</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Country</th>
+        <th>Batch</th>
+        <th>Code Deployed</th>
+        <th>QA Validation</th>
+        <th>Content Confirmation</th>
+        <th>Bank Sign-off</th>
+        <th>Imperva Ready</th>
+        <th>Content Replication</th>
+        <th>Go-Live Status</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>SG</b></td>
+        <td>Batch 1</td>
+        <td>Done</td>
+        <td>Done</td>
+        <td>Done</td>
+        <td>Pending</td>
+        <td>Ready</td>
+        <td>Planned</td>
+        <td><span class="pill pill-awaiting">Awaiting Approval</span></td>
+        <td>Waiting for bank final sign-off</td>
+      </tr>
+      <tr>
+        <td><b>HK</b></td>
+        <td>Batch 1</td>
+        <td>Done</td>
+        <td>In Progress</td>
+        <td>In Progress</td>
+        <td>Pending</td>
+        <td>Ready</td>
+        <td>Pending</td>
+        <td><span class="pill pill-progress">In Progress</span></td>
+        <td>QA and content confirmation in progress</td>
+      </tr>
+      <tr>
+        <td><b>TW</b></td>
+        <td>Batch 2</td>
+        <td>Planned</td>
+        <td>Not Started</td>
+        <td>Not Started</td>
+        <td>Not Started</td>
+        <td>Planned</td>
+        <td>Not Started</td>
+        <td><span class="pill pill-planned">Planned</span></td>
+        <td>Batch 2 country</td>
+      </tr>
+      <tr>
+        <td><b>IN</b></td>
+        <td>Batch 2</td>
+        <td>Planned</td>
+        <td>Not Started</td>
+        <td>Not Started</td>
+        <td>Not Started</td>
+        <td>Planned</td>
+        <td>Not Started</td>
+        <td><span class="pill pill-planned">Planned</span></td>
+        <td>Batch 2 country</td>
+      </tr>
+      <tr>
+        <td><b>AE</b></td>
+        <td>Batch 2</td>
+        <td>Planned</td>
+        <td>Not Started</td>
+        <td>Not Started</td>
+        <td>Not Started</td>
+        <td>Planned</td>
+        <td>Not Started</td>
+        <td><span class="pill pill-planned">Planned</span></td>
+        <td>Batch 2 country</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">Release Approval Workflow Tracker</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Approval Stage</th>
+        <th>Owner</th>
+        <th>Status</th>
+        <th>Date</th>
+        <th>Remarks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Code Deployment Completed</td>
+        <td>Accenture</td>
+        <td>Approved</td>
+        <td>{{Date}}</td>
+        <td>Release package deployed to target environments</td>
+      </tr>
+      <tr>
+        <td>QA Validation</td>
+        <td>QA Team</td>
+        <td>In Progress</td>
+        <td>{{Date}}</td>
+        <td>Functional and regression checks</td>
+      </tr>
+      <tr>
+        <td>Content Confirmation</td>
+        <td>QA Team</td>
+        <td>In Progress</td>
+        <td>{{Date}}</td>
+        <td>Content reviewed in staging</td>
+      </tr>
+      <tr>
+        <td>Bank Final Sign-off</td>
+        <td>Bank Internal Team</td>
+        <td>Pending</td>
+        <td>{{Date}}</td>
+        <td>Mandatory approval before go-live</td>
+      </tr>
+      <tr>
+        <td>Imperva Routing Readiness</td>
+        <td>Infra / Security</td>
+        <td>Ready</td>
+        <td>{{Date}}</td>
+        <td>Routing only, no negative rules</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">Go-Live Checklist</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Checklist Item</th>
+        <th>Owner</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Code deployed to PROD with toggle OFF</td>
+        <td>Accenture / DevOps</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>QA validation completed</td>
+        <td>QA Team</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>Content confirmation completed</td>
+        <td>QA Team</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>Bank final sign-off received</td>
+        <td>Bank Internal Team</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>Imperva routing ready</td>
+        <td>Infra / Security</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>Content replication executed</td>
+        <td>Content / QA / DevOps</td>
+        <td>☐</td>
+      </tr>
+      <tr>
+        <td>Post-go-live smoke test passed</td>
+        <td>QA Team</td>
+        <td>☐</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-title">Risks / Blockers</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Risk / Blocker</th>
+        <th>Impact</th>
+        <th>Owner</th>
+        <th>Mitigation</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Delay in bank sign-off</td>
+        <td>High</td>
+        <td>Bank Internal Team</td>
+        <td>Schedule sign-off review before release window</td>
+        <td>Open</td>
+      </tr>
+      <tr>
+        <td>Content mismatch in staging</td>
+        <td>Medium</td>
+        <td>QA Team</td>
+        <td>Content confirmation checkpoint before publish</td>
+        <td>Monitoring</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="small">Batch assumption used: Batch 1 = SG, HK | Batch 2 = TW, IN, AE</p>
+</div>
+</body>
